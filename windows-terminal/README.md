@@ -18,9 +18,9 @@ Unpackaged (preview) build:
 
 ## Apply on a new machine
 
-1. Install Windows Terminal and the fonts it references, e.g.:
-   - Fantasque Sans Mono
-   - FantasqueSansMono Nerd Font Mono
+1. Install Windows Terminal and the fonts it references:
+   - **Fantasque Sans Mono** — https://github.com/belluzj/fantasque-sans/releases
+   - **FantasqueSansMono Nerd Font Mono** — https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FantasqueSansMono.zip
    (Windows Terminal bundles only Cascadia Code/Mono.)
 2. Copy `settings.json` over the stock location above (or symlink it).
 
