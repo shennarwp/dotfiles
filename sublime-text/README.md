@@ -3,6 +3,11 @@
 Portable Sublime Text 3 configuration — preferences, keybindings, linter
 settings, and the Package Control plugin list.
 
+> Also works with **Sublime Text 4** — the config format (`.sublime-settings`,
+> `.sublime-keymap`, Package Control) is unchanged. On newer machines copy to
+> `%APPDATA%\Sublime Text\Packages\User\` (ST4 dropped the version in the
+> folder name).
+
 ## Stock location
 
 Windows (ST3):
