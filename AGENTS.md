@@ -99,7 +99,9 @@ e.g. local `~/.dotfiles-backup-20260912-231104`).
 - Updated ANSI-only `.bashrc` (no tput) deployed to gpd and local `~` only;
   other hosts still run the tput-gated older `.bashrc`. Push to m9/alp/rui/fata
   when convenient.
-- **REMINDER (user, Sep 2026): migrate GnuPG key from Cygwin to WSL**
-  (`/mnt/c/cygwin64/home/ruip_/.gnupg/`, gpg2 2.4.5). Plan: export
-  pub+sec armored from gpg2.exe, `apt install gnupg` in WSL, import + trust
-  ultimate, delete exports. WSL has no native gpg today.
+- **DONE (Sep 2026): GPG key migrated Cygwin → WSL.** Key
+  `C06C4DD034067569` (Shenna, shennawew@outlook.com) imported into WSL gpg
+  2.4.7, trust ultimate, Cygwin keyring emptied (backup at
+  `~/cygwin-gnupg-backup-20260913-232224/`). Git signing enabled repo-local
+  (`user.signingkey C06C4DD034067569`, `commit.gpgsign true`). The other two
+  GPG keys were removed from GitHub; only `C06C4DD034067569` remains.
