@@ -12,19 +12,12 @@
 		"Line Endings Unify",
 		"MarkdownLivePreview",
 		"MarkdownPreview",
-		"MoveTab",
 		"Open in Default Application",
 		"Origami",
 		"Package Control",
 		"SideBarEnhancements",
-		"SublimeLinter",
-		"SublimeLinter-javac",
-		"SublimeLinter-xmllint",
-		"SublimeREPL",
-		"Sync Settings",
-		"Terminal",
 		"Theme - Flatland",
-		"TrailingSpaces"
+		"TrailingSpaces",
 	],
 	"repositories":
 	[

@@ -1,9 +1,0 @@
-{
-	"swallow_startup_errors": true,
-	"anaconda_linter_mark_style": "squiggly_underline",
-	"anaconda_linter_phantoms": true,
-	"pep8_ignore":
-    [
-        "E501"
-    ],
-}

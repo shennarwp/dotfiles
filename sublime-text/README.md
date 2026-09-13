@@ -18,12 +18,10 @@ sublime-text/
 ├── Preferences.sublime-settings   theme (Flatland), colorscheme, font, misc
 ├── Default (Windows).sublime-keymap   custom keybindings (Ctrl+Alt+T terminal, ...)
 ├── Package Control.sublime-settings   installed package list + custom repos
-├── Anaconda.sublime-settings          python linting config
 ├── Python.sublime-settings            python tab/spaces
 ├── SublimeLinter.sublime-settings     linter debug
 ├── Terminal.sublime-settings          external terminal exe (ConEmu)
-├── trailing_spaces.sublime-settings   trim on save
-└── SyncSettings.sublime-settings      TEMPLATE — fill in your own token/gist
+└── trailing_spaces.sublime-settings   trim on save
 ```
 
 ## Setup on a new machine
@@ -40,10 +38,8 @@ sublime-text/
 ## Plugins (from `Package Control.sublime-settings`)
 
 A File Icon, BracketHighlighter, Exalt, File Rename, Line Endings Unify,
-MarkdownLivePreview, MarkdownPreview, MoveTab, Open in Default Application,
-Origami, Package Control, SideBarEnhancements, SublimeLinter,
-SublimeLinter-javac, SublimeLinter-xmllint, SublimeREPL, Sync Settings,
-Terminal, Theme - Flatland, TrailingSpaces.
+MarkdownLivePreview, MarkdownPreview, Open in Default Application, Origami,
+Package Control, SideBarEnhancements, Theme - Flatland, TrailingSpaces.
 
 The `Installed Packages/*.sublime-package` archives are not stored here —
 Package Control re-downloads them from the list.
@@ -52,9 +48,3 @@ Package Control re-downloads them from the list.
 
 Requires **Fantasque Sans Mono** (see `windows-terminal/README.md`).
 ConEmu (`C:\Program Files\ConEmu\ConEmu64.exe`) if you change the terminal.
-
-## Secrets
-
-`SyncSettings.sublime-settings` originally contained a real GitHub access
-token. It is NOT tracked here — only the template is committed. Fill in your
-own token/gist id per machine, and rotate any leaked token on GitHub.
