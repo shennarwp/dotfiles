@@ -1,8 +1,4 @@
 [
-	// terminal
-	{ "keys": ["ctrl+alt+t"], "command": "open_terminal" },
-	{ "keys": ["ctrl+alt+shift+t"], "command": "open_terminal_project_folder" },
-
 	// reopen last saved file
 	{ "keys": ["ctrl+shift+t"], "command": "reopen_last_file" },
 ]

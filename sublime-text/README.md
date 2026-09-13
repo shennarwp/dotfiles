@@ -16,11 +16,9 @@ Windows (ST3):
 ```
 sublime-text/
 ├── Preferences.sublime-settings   theme (Flatland), colorscheme, font, misc
-├── Default (Windows).sublime-keymap   custom keybindings (Ctrl+Alt+T terminal, ...)
-├── Package Control.sublime-settings   installed package list + custom repos
+├── Default (Windows).sublime-keymap   custom keybindings (Ctrl+Shift+T, ...)
+├── Package Control.sublime-settings   installed package list
 ├── Python.sublime-settings            python tab/spaces
-├── SublimeLinter.sublime-settings     linter debug
-├── Terminal.sublime-settings          external terminal exe (ConEmu)
 └── trailing_spaces.sublime-settings   trim on save
 ```
 
@@ -47,4 +45,3 @@ Package Control re-downloads them from the list.
 ## Fonts
 
 Requires **Fantasque Sans Mono** (see `windows-terminal/README.md`).
-ConEmu (`C:\Program Files\ConEmu\ConEmu64.exe`) if you change the terminal.

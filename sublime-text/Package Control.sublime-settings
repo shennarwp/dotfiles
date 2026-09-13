@@ -21,6 +21,5 @@
 	],
 	"repositories":
 	[
-		"https://github.com/SublimeLinter/SublimeLinter-xmllint"
 	],
 }
