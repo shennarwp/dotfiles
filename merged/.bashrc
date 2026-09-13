@@ -109,6 +109,12 @@ On_IWhite='\e[0;107m'   # White
 
 # --- prompt ----------------------------------------------------------------
 
+# let gpg pinentry see the tty (needed for interactive passphrase prompts)
+if [ -t 0 ] && command -v tty >/dev/null 2>&1; then
+    GPG_TTY=$(tty)
+    export GPG_TTY
+fi
+
 # colorize unless the terminal is dumb (ANSI-only, no tput required)
 case "${TERM:-dumb}" in
     dumb|"") color_prompt= ;;
