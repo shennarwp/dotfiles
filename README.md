@@ -26,6 +26,13 @@ merged-gpd/             Alpine 3.24 (no ncurses, apk-based)
 merged-omega/           OpenWrt 18.06 MIPS (ash, busybox-only)
 └── .profile            ash-compatible, sources shared aliases, pfetch banner,
                         custom overrides (vim→vi, spd→OVH wget)
+
+windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
+├── settings.json       sanitized, portable config (theme + fonts + profiles)
+├── schemes/            extracted Monokai Remastered scheme + ANSI mapping
+└── README.md           stock location, apply steps, font links
+
+.gitleaks.toml          secret-scan config (used by the pre-commit hook)
 ```
 
 ## Hosts
@@ -51,6 +58,14 @@ Manual scp/rsync per host. Each host's dotfiles are installed to `~/` in the res
 - **QNAP**: copy `merged-qnap/` files (QNP-specific .bashrc + shared aliases/functions)
 - **gpd**: copy `merged/` files + `merged-gpd/.bash_aliases` (apk overrides)
 - **omega**: copy `merged-omega/.profile` + shared `merged/.bash_aliases` (no .bash_functions — ash can't source it)
+
+Connection details live in local `~/.ssh/config`; only host alias names are referenced here.
+
+## Secret scanning
+
+`gitleaks` (at `~/bin/gitleaks`) runs from the `.git/hooks/pre-commit` hook on every
+commit via `gitleaks detect --pipe --config .gitleaks.toml`. No secrets, ports, IPs,
+or usernames are tracked in this repo.
 
 ## Legacy
 
