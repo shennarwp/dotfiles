@@ -1,0 +1,14 @@
+{
+	"color_scheme": "Packages/Theme - Flatland/Flatland Monokai.tmTheme",
+	"font_face": "Fantasque Sans Mono",
+	"font_size": 13,
+	"ignored_packages":
+	[
+		"Sync Settings",
+		"Vintage",
+	],
+	"open_files_in_new_window": false,
+	"preview_on_click": false,
+	"theme": "Flatland Dark.sublime-theme",
+	"index_files": true,
+}

@@ -1,0 +1,33 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"A File Icon",
+		"BracketHighlighter",
+		"Exalt",
+		"File Rename",
+		"Line Endings Unify",
+		"MarkdownLivePreview",
+		"MarkdownPreview",
+		"MoveTab",
+		"Open in Default Application",
+		"Origami",
+		"Package Control",
+		"SideBarEnhancements",
+		"SublimeLinter",
+		"SublimeLinter-javac",
+		"SublimeLinter-xmllint",
+		"SublimeREPL",
+		"Sync Settings",
+		"Terminal",
+		"Theme - Flatland",
+		"TrailingSpaces"
+	],
+	"repositories":
+	[
+		"https://github.com/SublimeLinter/SublimeLinter-xmllint"
+	],
+}

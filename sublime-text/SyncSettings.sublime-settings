@@ -1,0 +1,12 @@
+{
+	// regenerated with a REAL token per machine:
+	// "access_token": "<YOUR-GITHUB-TOKEN>",
+	"excluded_files":
+	[
+		"*.SublimeREPLHistory*",
+		"*REPL*",
+		"*cache*",
+		"*last-run*"
+	],
+	"gist_id": "<YOUR-GIST-ID>"
+}
