@@ -1,0 +1,19 @@
+# gitleaks config: default rules + stricter GitHub PAT detection
+# used by .git/hooks/pre-commit (gitleaks detect --pipe --config .gitleaks.toml)
+
+useDefault = true
+
+[[rules]]
+id = "github-pat-bare"
+description = "bare GitHub personal access token (ghp_/gho_/ghu_/ghs_)"
+regex = '''(?:ghp|gho|ghu|ghs)_[A-Za-z0-9]{36}'''
+secretGroup = 0
+entropy = 3.0
+keywords = ["ghp_", "gho_", "ghu_", "ghs_"]
+
+[[rules]]
+id = "slack-token"
+description = "Slack token (xox[abpr]-...)"
+regex = '''xox[baprs]-[A-Za-z0-9-]{10,48}'''
+secretGroup = 0
+keywords = ["xoxb-", "xoxa-", "xoxp-", "xoxr-", "xoxs-"]
