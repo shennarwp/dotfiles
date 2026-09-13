@@ -106,3 +106,6 @@ alias gpso='gps origin'
 # pull
 alias gpl='git pull'
 alias gplo='gpl origin'
+# --- QNAP override: /bin/ls (busybox) has no --color support -----------------
+unset LS_OPTIONS 2>/dev/null
+export __LS_OPTIONS='-h'

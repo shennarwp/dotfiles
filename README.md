@@ -16,7 +16,7 @@ merged/                 single source of truth — deployed to most hosts
 
 merged-qnap/            QNAP TS-219 (ARMv5, bash 3.2, no git/tput/hostid)
 ├── .bashrc             ANSI-only prompt (no jobs/screen blocks), neofetch banner
-├── .bash_aliases       shared aliases
+├── .bash_aliases       shared aliases + QNAP ls override (no --color on busybox)
 ├── .bash_functions     shared functions
 └── .bash_logout        reset terminal on logout
 

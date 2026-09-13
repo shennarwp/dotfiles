@@ -7,7 +7,9 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
 
 - `merged/` — single source of truth, deployed to standard bash hosts
 - `merged-qnap/` — .bashrc is QNAP-specific; `.bash_aliases`/`.bash_functions`
-  are sync'd copies of the `merged/` equivalents plus no additions (keep in sync)
+  are sync'd copies of the `merged/` equivalents **plus a trailing QNAP
+  override section for `ls`** (busybox `/bin/ls` has no `--color`; sets
+  `__LS_OPTIONS='-h'`). Keep the sync'd part in sync.
 - `merged-gpd/` — `.bash_aliases` = sync'd copy of `merged/` **plus a trailing
   Alpine/apk override section** (uu, uug, aai, aas). Keep the sync'd part in sync.
 - `merged-omega/` — `.profile` is the omega config; it sources the *deployed*
@@ -18,7 +20,7 @@ Rules of thumb:
 - After editing `merged/.bash_aliases` or `merged/.bash_functions`, sync:
   `cp merged/.bash_aliases merged-qnap/.bash_aliases` and
   `cp merged/.bash_aliases merged-gpd/.bash_aliases` then re-append the gpd
-  apk override block (uu/uug/aai/aas).
+  apk override block (uu/uug/aai/aas) and the qnap `ls`/`__LS_OPTIONS` block.
 - After editing `merged/.bashrc`, also sync local copy `~/.bashrc` when you
   deploy locally.
 
