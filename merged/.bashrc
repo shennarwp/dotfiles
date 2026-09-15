@@ -263,7 +263,7 @@ fi
 umask 022
 
 # per-tool paths (machine specific; harmless elsewhere)
-export PATH=/home/shennarwp/.opencode/bin:$PATH
+export PATH=$HOME/.opencode/bin:$PATH
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin

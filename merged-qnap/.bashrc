@@ -15,6 +15,9 @@ export PATH=\
 /usr/bin/X11:\
 /usr/local/bin
 
+# opencode CLI
+export PATH=$HOME/.opencode/bin:$PATH
+
 # include the user's private bin dir.
 if [ -d "$HOME/bin" ]; then
     PATH="$HOME/bin:$PATH"

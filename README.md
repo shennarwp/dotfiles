@@ -44,6 +44,7 @@ windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
 | alp | `alp` | Debian 12 bookworm | x86_64 | alpinesky |
 | rui | `rui` | Ubuntu 24.04 | aarch64 | ruipryux |
 | fata | `fata` | Debian 11 bullseye | x86_64 | fastfetch polyfilled .deb |
+| zot | `zot` | Debian 13 trixie | x86_64 | fastfetch 2.40.4-debug |
 | qnap | `qnap` | QTS 4.3.3 (TS-219) | armv5tel | no tput/git/jobs, neofetch |
 | gpd | `gpd` | Alpine 3.24 | x86_64 | requires `apk add bash bash-completion ncurses fastfetch` |
 | omega | `omg` | OpenWrt 18.06 | MIPS | ash/busybox, pfetch, no fastfetch |

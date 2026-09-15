@@ -35,6 +35,7 @@ Standard deploy = push `merged/` files to `~/` on the host.
 | alp | `alp` | `merged/` | fastfetch 2.68.1 at `~/bin/fastfetch` | Debian 12 x86_64 |
 | rui | `rui` | `merged/` | fastfetch 2.68.1 at `~/bin/fastfetch` (aarch64) | symlinked dotfiles config, Ubuntu 24.04 |
 | fata | `fata` | `merged/` | fastfetch 2.68.1 (polyfilled .deb) | Debian 11 |
+| zot | `zot` | `merged/` | fastfetch 2.40.4-debug at `/usr/bin/fastfetch` | Debian 13 x86_64 |
 | qnap | `qnap` (home /root) | `merged-qnap/` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
 | gpd | `gpd` | `merged/` + `merged-gpd/.bash_aliases` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
 | omega | `omg` (home /root) | `merged-omega/.profile` + shared aliases | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |

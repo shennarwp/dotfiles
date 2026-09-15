@@ -7,6 +7,10 @@
 # --- shared merged aliases (ash-compatible) -------------------------------
 [ -f ~/.bash_aliases ] && . ~/.bash_aliases
 
+# --- PATH: opencode CLI + user bin ----------------------------------------
+export PATH=$HOME/.opencode/bin:$PATH
+[ -d "$HOME/bin" ] && export PATH="$HOME/bin:$PATH"
+
 # --- omega-specific overrides ----------------------------------------------
 unalias esrc src vim v vi spd 2>/dev/null
 alias esrc='vi ~/.profile'   # config file is .profile here
