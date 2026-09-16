@@ -32,6 +32,11 @@ windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
 ├── schemes/            extracted Monokai Remastered scheme + ANSI mapping
 └── README.md           stock location, apply steps, font links
 
+vscode/                 Windows VS Code config for remote development over WSL
+├── settings.json       editor settings, theme, remote SSH config
+├── wsl-ssh.bat         helper that proxies SSH calls through WSL
+└── README.md           deploy instructions and notes
+
 .gitleaks.toml          secret-scan config (used by the pre-commit hook)
 ```
 
