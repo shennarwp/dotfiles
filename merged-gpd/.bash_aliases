@@ -54,6 +54,7 @@ alias dc='docker'
 alias dco='docker compose'
 alias dcip="docker ps -q | xargs -n 1 docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} {{ .Name }}' | sed 's/ \// /'"
 alias dry='docker run --name dry --rm -it -v /var/run/docker.sock:/var/run/docker.sock -e DOCKER_HOST= $DOCKER_HOST moncho/dry'
+alias ctop='docker run --rm -ti --name=ctop --volume /var/run/docker.sock:/var/run/docker.sock:ro quay.io/vektorlab/ctop:latest'
 
 # --- system info / fetch scripts -------------------------------------------
 alias nf='neofetch'

@@ -12,12 +12,13 @@ export PATH=$HOME/.opencode/bin:$PATH
 [ -d "$HOME/bin" ] && export PATH="$HOME/bin:$PATH"
 
 # --- omega-specific overrides ----------------------------------------------
-unalias esrc src vim v vi spd 2>/dev/null
+unalias esrc src vim v vi spd rm 2>/dev/null
 alias esrc='vi ~/.profile'   # config file is .profile here
 alias src='. ~/.profile'
 alias pf='~/.pfetch'
 alias vim='vi'               # no vim on omega
 alias spd='wget -O /dev/null "http://proof.ovh.net/files/100Mb.dat" ; date'   # busybox wget: no custom headers
+alias rm='rm -i'             # busybox rm: no -I/--one-file-system/--preserve-root
 
 # --- pfetch banner (once per login session) --------------------------------
 if [ -x "$HOME/.pfetch" ] && [ -z "$PFETCH_RAN" ]; then
