@@ -26,10 +26,10 @@ alias vi='vim'
 alias v='vi'
 
 # safer file operations
-alias mkdir='mkdir -p -v'
+alias mkdir='mkdir -p'
 alias md='mkdir'
-alias mv='mv -iv'
-alias rm='rm -Iv --one-file-system --preserve-root'
+alias mv='mv -i'
+alias rm='rm -i'
 
 # --- edit this config -----------------------------------------------------
 alias esrc='vi ~/.bashrc'
