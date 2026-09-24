@@ -77,7 +77,6 @@ else
 fi
 alias sb='subl'
 alias spt='C:/Program\ Files/spotify-tui/spt.exe'
-alias rpo='cd C:/repos'
 alias jpt='jupyter notebook'
 alias stg='stack ghci'
 

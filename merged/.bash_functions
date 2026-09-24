@@ -40,6 +40,30 @@ function allcolors() {
     echo ""
 }
 
+# cd into the first repos dir that exists on this host (locations vary per host)
+function rpo() {
+    local d
+    for d in ~/repo ~/Repo; do
+        if [ -d "$d" ]; then
+            cd "$d" || return
+            return
+        fi
+    done
+    echo "rpo: no repos dir found" >&2
+}
+
+# cd into the Windows-filesystem repos dir (WSL mount of C:)
+function rpow() {
+    local d
+    for d in /mnt/c/repo /mnt/c/Repo; do
+        if [ -d "$d" ]; then
+            cd "$d" || return
+            return
+        fi
+    done
+    echo "rpow: no Windows repos dir found" >&2
+}
+
 # cloudflare speed test (100 MB), summarized in MB
 function spd() {
     local out
