@@ -279,6 +279,11 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# host-specific overrides (e.g. Alpine apk, QNAP busybox) — optional
+if [ -f ~/.bash_aliases_local ]; then
+    . ~/.bash_aliases_local
+fi
+
 if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions
 fi

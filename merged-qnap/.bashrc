@@ -148,7 +148,7 @@ fi
 unset color_prompt
 
 # Shared dotfiles from the merged repo.
-for f in ~/.bash_aliases ~/.bash_functions; do
+for f in ~/.bash_aliases ~/.bash_aliases_local ~/.bash_functions; do
     if [ -f "$f" ]; then
         . "$f"
     fi

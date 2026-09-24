@@ -1,0 +1,18 @@
+# ~/.bash_aliases_local — QNAP host overrides.
+# Sourced from ~/.bashrc AFTER ~/.bash_aliases (the common merged set).
+# Only what QNAP needs to deviate from the common aliases lives here;
+# it is NOT a copy of the common set.
+
+# --- QNAP: busybox /bin/ls has no --color; the common __LS_OPTIONS
+#     ('--color=auto -h') would break every ls call -------------------------
+unset LS_OPTIONS 2>/dev/null
+export __LS_OPTIONS='-h'
+
+# --- QNAP: busybox coreutils lack GNU flags used in the common set ---------
+alias mkdir='mkdir -p'
+alias mv='mv -i'
+alias rm='rm -i'
+
+# --- QNAP: no apt, no opkg -> drop the common uu/uug update aliases -------
+unalias uu 2>/dev/null
+unalias uug 2>/dev/null

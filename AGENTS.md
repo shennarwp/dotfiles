@@ -6,12 +6,12 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
 ## Layout (what survived the consolidation)
 
 - `merged/` — single source of truth, deployed to standard bash hosts
-- `merged-qnap/` — .bashrc is QNAP-specific; `.bash_aliases`/`.bash_functions`
-  are sync'd copies of the `merged/` equivalents **plus a trailing QNAP
-  override section for `ls`** (busybox `/bin/ls` has no `--color`; sets
-  `__LS_OPTIONS='-h'`). Keep the sync'd part in sync.
-- `merged-gpd/` — `.bash_aliases` = sync'd copy of `merged/` **plus a trailing
-  Alpine/apk override section** (uu, uug, aai, aas). Keep the sync'd part in sync.
+- `merged-qnap/` — `.bashrc` is QNAP-specific; `.bash_functions`/`.bash_logout`
+  are sync'd copies of the `merged/` equivalents. `.bash_aliases_local` is the
+  QNAP-only override layer (busybox `ls`/`rm`/`mkdir`/`mv`, drops apt `uu`);
+  it is NOT a copy of `merged/.bash_aliases`.
+- `merged-gpd/` — `.bash_aliases_local` is the Alpine-only override layer (apk
+  `uu`/`uug`/`aai`/`aas`); everything else comes from `merged/`.
 - `merged-omega/` — omega config: a deliberately **BusyBox/ash-compatible**
   `.bash_aliases` (no GNU/Debian-specific flags like `rm -Iv`, `ls --color`,
   apt) plus a `.profile` that sources it. This is NOT a sync'd copy of
@@ -19,10 +19,11 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
-- After editing `merged/.bash_aliases` or `merged/.bash_functions`, sync:
-  `cp merged/.bash_aliases merged-qnap/.bash_aliases` and
-  `cp merged/.bash_aliases merged-gpd/.bash_aliases` then re-append the gpd
-  apk override block (uu/uug/aai/aas) and the qnap `ls`/`__LS_OPTIONS` block.
+- Per-host alias overrides live in `merged-qnap/.bash_aliases_local` and
+  `merged-gpd/.bash_aliases_local`, sourced from `.bashrc` after the common
+  `.bash_aliases`.
+- After editing `merged/.bash_functions`, sync:
+  `cp merged/.bash_functions merged-qnap/.bash_functions`.
 - After editing `merged/.bashrc`, also sync local copy `~/.bashrc` when you
   deploy locally.
 
@@ -38,8 +39,8 @@ Standard deploy = push `merged/` files to `~/` on the host.
 | rui | `rui` | `merged/` | fastfetch 2.68.1 at `~/bin/fastfetch` (aarch64) | symlinked dotfiles config, Ubuntu 24.04 |
 | fata | `fata` | `merged/` | fastfetch 2.68.1 (polyfilled .deb) | Debian 11 |
 | zot | `zot` | `merged/` | fastfetch 2.40.4-debug at `/usr/bin/fastfetch` | Debian 13 x86_64 |
-| qnap | `qnap` (home /root) | `merged-qnap/` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
-| gpd | `gpd` | `merged/` + `merged-gpd/.bash_aliases` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
+| qnap | `qnap` (home /root) | `merged-qnap/` + `merged/.bash_aliases` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
+| gpd | `gpd` | `merged/` + `merged-gpd/.bash_aliases_local` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
 | omega | `omg` (home /root) | `merged-omega/` (aliases + profile) | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |
 
 ## Known environment limits per host
@@ -64,8 +65,9 @@ Standard deploy = push `merged/` files to `~/` on the host.
 ## Aliases/functions conventions
 
 - Everything lives in `merged/.bash_aliases` / `merged/.bash_functions`.
-- Host-specific only overrides in the per-host suffix (Alpine apk block); the
-  omega aliases are a standalone ash-compatible set in `merged-omega/`.
+- Host-specific only overrides in the per-host `.bash_aliases_local` suffix
+  (Alpine apk block, QNAP busybox block); the omega aliases are a standalone
+  ash-compatible set in `merged-omega/`.
 - `spd` is a FUNCTION in `.bash_functions` (bash hosts, curl+awk MB summary);
   on omega it is a wget alias in `merged-omega/.bash_aliases`.
 
@@ -73,9 +75,11 @@ Standard deploy = push `merged/` files to `~/` on the host.
 
 - Standard bash hosts: copy `merged/{.bashrc,.bash_aliases,.bash_functions,.bash_profile,.profile,.bash_logout,.vimrc}`
   to `~/` on the host.
-- qnap: no scp, home is /root — pipe file contents over ssh into `~`.
+- qnap: no scp, home is /root — pipe file contents over ssh into `~`. Deploy
+  `merged-qnap/.bashrc` + `merged-qnap/.bash_functions` + `merged-qnap/.bash_logout`
+  + `merged/.bash_aliases` + `merged-qnap/.bash_aliases_local`.
 - omega: deploy `merged-omega/.bash_aliases` and `merged-omega/.profile` only.
-- gpd: `merged/` files plus `merged-gpd/.bash_aliases` (apk overrides).
+- gpd: `merged/` files plus `merged-gpd/.bash_aliases_local` (apk overrides).
 - local x270: `cp merged/{...} ~/`.
 - rui/fata: dotfiles are symlinks (dotfiles-manager), scp follows them.
 

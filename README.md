@@ -16,12 +16,12 @@ merged/                 single source of truth — deployed to most hosts
 
 merged-qnap/            QNAP TS-219 (ARMv5, bash 3.2, no git/tput/hostid)
 ├── .bashrc             ANSI-only prompt (no jobs/screen blocks), neofetch banner
-├── .bash_aliases       shared aliases + QNAP ls override (no --color on busybox)
+├── .bash_aliases_local QNAP busybox overrides (ls no --color, rm/mv/mkdir -i/-p, no uu)
 ├── .bash_functions     shared functions
 └── .bash_logout        reset terminal on logout
 
 merged-gpd/             Alpine 3.24 (no ncurses, apk-based)
-└── .bash_aliases       shared aliases + apk uu/uug/aai/aas overrides
+└── .bash_aliases_local apk uu/uug/aai/aas overrides
 
 merged-omega/           OpenWrt 18.06 MIPS (ash, busybox-only)
 ├── .bash_aliases       deliberately ash/busybox-compatible set (no GNU flags)
@@ -59,10 +59,12 @@ vscode/                 Windows VS Code config for remote development over WSL
 
 Manual scp/rsync per host. Each host's dotfiles are installed to `~/` in the respective home:
 
-- **Standard hosts** (m9, alp, rui, fata): copy `merged/` files directly
+- **Standard hosts** (m9, alp, rui, fata, zot): copy `merged/` files directly
 - **Local x270**: copy `merged/` files to `~/`
-- **QNAP**: copy `merged-qnap/` files (QNP-specific .bashrc + shared aliases/functions)
-- **gpd**: copy `merged/` files + `merged-gpd/.bash_aliases` (apk overrides)
+- **QNAP**: copy `merged-qnap/.bashrc` + `merged-qnap/.bash_functions` +
+  `merged-qnap/.bash_logout` + `merged/.bash_aliases` +
+  `merged-qnap/.bash_aliases_local`
+- **gpd**: copy `merged/` files + `merged-gpd/.bash_aliases_local` (apk overrides)
 - **omega**: copy `merged-omega/.bash_aliases` + `merged-omega/.profile` (its own ash-compatible set)
 
 Connection details live in local `~/.ssh/config`; only host alias names are referenced here.
