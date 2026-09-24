@@ -20,9 +20,9 @@ and easier to deploy.
 ## Portability and maintainability
 
 - [x] Reduce duplication between `merged/.bash_aliases`,
-  `merged-qnap/.bash_aliases`, and `merged-gpd/.bash_aliases`. Keep common
+  `merged-qnap/.bash_aliases`, and `merged-alpine/.bash_aliases`. Keep common
   aliases in one source and generate or layer host-specific overrides.
-- [x] Rework the Omega configuration so it sources only a deliberately
+- [x] Rework the OpenWrt configuration so it sources only a deliberately
   BusyBox/ash-compatible alias set. The shared aliases currently include
   GNU- and Debian-specific options such as `rm -Iv --one-file-system
   --preserve-root`.

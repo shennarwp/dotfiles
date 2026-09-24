@@ -1,11 +1,11 @@
-# ~/.profile for the Onion Omega2 (OpenWrt, BusyBox ash).
+# ~/.profile for the OpenWrt host (Onion Omega2, BusyBox ash).
 #
-# Sources ~/.bash_aliases (the merged-omega/ deliberate BusyBox/ash-compatible
-# alias set) and sets up the omega-specific bits: PATH for opencode, the
+# Sources ~/.bash_aliases (the merged-openwrt/ deliberate BusyBox/ash-compatible
+# alias set) and sets up the openwrt bits: PATH for opencode, the
 # pfetch banner, and a clear-on-logout trap. ~/.pfetch replaces the
 # fastfetch/neofetch banner.
 
-# --- omega aliases (BusyBox/ash-compatible, from merged-omega) -----------
+# --- openwrt aliases (BusyBox/ash-compatible, from merged-openwrt) -------
 [ -f ~/.bash_aliases ] && . ~/.bash_aliases
 
 # --- PATH: opencode CLI + user bin ----------------------------------------

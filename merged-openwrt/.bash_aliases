@@ -1,6 +1,6 @@
 #!/usr/bin/env ash
 #
-# ~/.bash_aliases for the Onion Omega2 (OpenWrt, BusyBox ash).
+# ~/.bash_aliases for the OpenWrt host (Onion Omega2, BusyBox ash).
 # Deliberately BusyBox/ash-compatible ONLY — no GNU- or Debian-specific
 # flags (e.g. rm -Iv --one-file-system, ls --color, apt). Sourced from
 # ~/.profile, NOT bashrc/bash_functions (ash can't source those).
@@ -23,7 +23,7 @@ alias sl='ls'
 alias cl='clear'
 alias more='less'
 
-alias vi='vi'                       # vim is not available on omega
+alias vi='vi'                       # vim is not available on openwrt
 alias v='vi'
 
 # safer file operations (busybox-compatible flags only)

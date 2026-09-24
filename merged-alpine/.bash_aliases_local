@@ -1,6 +1,6 @@
-# ~/.bash_aliases_local — Alpine (gpd) host overrides.
+# ~/.bash_aliases_local — Alpine host overrides.
 # Sourced from ~/.bashrc AFTER ~/.bash_aliases (the common merged set).
-# Only what gpd needs to deviate from the common aliases lives here;
+# Only what the Alpine host needs to deviate from the common aliases lives here;
 # it is NOT a copy of the common set.
 
 # --- Alpine (apk) overrides: the common apt-based uu/uug are replaced ------

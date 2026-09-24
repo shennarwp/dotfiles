@@ -10,17 +10,17 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
   are sync'd copies of the `merged/` equivalents. `.bash_aliases_local` is the
   QNAP-only override layer (busybox `ls`/`rm`/`mkdir`/`mv`, drops apt `uu`);
   it is NOT a copy of `merged/.bash_aliases`.
-- `merged-gpd/` — `.bash_aliases_local` is the Alpine-only override layer (apk
+- `merged-alpine/` — `.bash_aliases_local` is the Alpine-only override layer (apk
   `uu`/`uug`/`aai`/`aas`); everything else comes from `merged/`.
-- `merged-omega/` — omega config: a deliberately **BusyBox/ash-compatible**
-  `.bash_aliases` (no GNU/Debian-specific flags like `rm -Iv`, `ls --color`,
-  apt) plus a `.profile` that sources it. This is NOT a sync'd copy of
-  `merged/`; keep it standalone.
+- `merged-openwrt/` — the OpenWrt host's config: a deliberately
+  **BusyBox/ash-compatible** `.bash_aliases` (no GNU/Debian-specific flags like
+  `rm -Iv`, `ls --color`, apt) plus a `.profile` that sources it. This is NOT a
+  sync'd copy of `merged/`; keep it standalone.
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
 - Per-host alias overrides live in `merged-qnap/.bash_aliases_local` and
-  `merged-gpd/.bash_aliases_local`, sourced from `.bashrc` after the common
+  `merged-alpine/.bash_aliases_local`, sourced from `.bashrc` after the common
   `.bash_aliases`.
 - After editing `merged/.bash_functions`, sync:
   `cp merged/.bash_functions merged-qnap/.bash_functions`.
@@ -40,19 +40,19 @@ Standard deploy = push `merged/` files to `~/` on the host.
 | fata | `fata` | `merged/` | fastfetch 2.68.1 (polyfilled .deb) | Debian 11 |
 | zot | `zot` | `merged/` | fastfetch 2.40.4-debug at `/usr/bin/fastfetch` | Debian 13 x86_64 |
 | qnap | `qnap` (home /root) | `merged-qnap/` + `merged/.bash_aliases` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
-| gpd | `gpd` | `merged/` + `merged-gpd/.bash_aliases_local` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
-| omega | `omg` (home /root) | `merged-omega/` (aliases + profile) | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |
+| alpine | `gpd` | `merged/` + `merged-alpine/.bash_aliases_local` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
+| openwrt | `omg` (home /root) | `merged-openwrt/` (aliases + profile) | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |
 
 ## Known environment limits per host
 
 - qnap: no `jobs` builtin, no `tput`, no `hostid`, no `git`, no `seq`. Prompt
   is ANSI-only, jobs/screen blocks removed from prompt.
-- omega: ash, not bash. `.bash_functions` uses `function` keyword → NEVER
+- openwrt: ash, not bash. `.bash_functions` uses `function` keyword → NEVER
   source it there. Only busybox `wget` (no curl) → `spd` uses OVH
   `http://proof.ovh.net/files/100Mb.dat`.
-- gpd: dispose of ncurses → no `tput`; prompt gate was converted to ANSI-only;
+- alpine: dispose of ncurses → no `tput`; prompt gate was converted to ANSI-only;
   `__getMachineId` falls back to hashing hostname when no `machine-id`.
-- fastfetch has no builds for QNAP (ARMv5) or omega (MIPS) → use neofetch/pfetch.
+- fastfetch has no builds for QNAP (ARMv5) or openwrt (MIPS) → use neofetch/pfetch.
 - fata has no wget, only curl.
 
 ## Prompt design (non-negotiables)
@@ -66,10 +66,10 @@ Standard deploy = push `merged/` files to `~/` on the host.
 
 - Everything lives in `merged/.bash_aliases` / `merged/.bash_functions`.
 - Host-specific only overrides in the per-host `.bash_aliases_local` suffix
-  (Alpine apk block, QNAP busybox block); the omega aliases are a standalone
-  ash-compatible set in `merged-omega/`.
+  (Alpine apk block, QNAP busybox block); the openwrt aliases are a standalone
+  ash-compatible set in `merged-openwrt/`.
 - `spd` is a FUNCTION in `.bash_functions` (bash hosts, curl+awk MB summary);
-  on omega it is a wget alias in `merged-omega/.bash_aliases`.
+  on openwrt it is a wget alias in `merged-openwrt/.bash_aliases`.
 
 ## Deployment
 
@@ -78,8 +78,10 @@ Standard deploy = push `merged/` files to `~/` on the host.
 - qnap: no scp, home is /root — pipe file contents over ssh into `~`. Deploy
   `merged-qnap/.bashrc` + `merged-qnap/.bash_functions` + `merged-qnap/.bash_logout`
   + `merged/.bash_aliases` + `merged-qnap/.bash_aliases_local`.
-- omega: deploy `merged-omega/.bash_aliases` and `merged-omega/.profile` only.
-- gpd: `merged/` files plus `merged-gpd/.bash_aliases_local` (apk overrides).
+- openwrt: deploy `merged-openwrt/.bash_aliases` and `merged-openwrt/.profile`
+  only (ssh alias `omg`).
+- alpine: `merged/` files plus `merged-alpine/.bash_aliases_local` (apk
+  overrides; ssh alias `gpd`).
 - local x270: `cp merged/{...} ~/`.
 - rui/fata: dotfiles are symlinks (dotfiles-manager), scp follows them.
 
@@ -97,13 +99,14 @@ e.g. local `~/.dotfiles-backup-20260912-231104`).
 
 ## Parked work
 
-- Automate deployment with a multi-OS `deploy.sh` that reads `~/.ssh/config`
-  hosts, probes OS (debian/ubuntu|alpine|qnap|openwrt) and deploys per-OS
-  manifests. User parked this; revisit only on request.
+- 
 
 ## Todo / known deltas
 
-- Updated ANSI-only `.bashrc` (no tput) deployed to gpd and local `~` only;
+- `~/.ssh/config` (local) has CRLF line endings; host aliases there had a
+  trailing `\r` that broke `deploy.sh` until it started stripping CR. Keep
+  that gentle in any new tooling.
+- Updated ANSI-only `.bashrc` (no tput) deployed to alpine and local `~` only;
   other hosts still run the tput-gated older `.bashrc`. Push to m9/alp/rui/fata
   when convenient.
 - **DONE (Sep 2026): GPG key migrated Cygwin → WSL.** Key

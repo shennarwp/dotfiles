@@ -20,12 +20,12 @@ merged-qnap/            QNAP TS-219 (ARMv5, bash 3.2, no git/tput/hostid)
 ├── .bash_functions     shared functions
 └── .bash_logout        reset terminal on logout
 
-merged-gpd/             Alpine 3.24 (no ncurses, apk-based)
+merged-alpine/           Alpine 3.24 (no ncurses, apk-based)
 └── .bash_aliases_local apk uu/uug/aai/aas overrides
 
-merged-omega/           OpenWrt 18.06 MIPS (ash, busybox-only)
+merged-openwrt/          OpenWrt 18.06 MIPS (ash, busybox-only)
 ├── .bash_aliases       deliberately ash/busybox-compatible set (no GNU flags)
-└── .profile            sources the omega aliases, pfetch banner, PATH
+└── .profile            sources the openwrt aliases, pfetch banner, PATH
 
 windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
 ├── settings.json       sanitized, portable config (theme + fonts + profiles)
@@ -38,6 +38,7 @@ vscode/                 Windows VS Code config for remote development over WSL
 └── README.md           deploy instructions and notes
 
 .gitleaks.toml          secret-scan config (used by the pre-commit hook)
+deploy.sh               one-shot deploy to all hosts (probes OS, per-OS manifests)
 ```
 
 ## Hosts
@@ -51,8 +52,8 @@ vscode/                 Windows VS Code config for remote development over WSL
 | fata | `fata` | Debian 11 bullseye | x86_64 | fastfetch polyfilled .deb |
 | zot | `zot` | Debian 13 trixie | x86_64 | fastfetch 2.40.4-debug |
 | qnap | `qnap` | QTS 4.3.3 (TS-219) | armv5tel | no tput/git/jobs, neofetch |
-| gpd | `gpd` | Alpine 3.24 | x86_64 | requires `apk add bash bash-completion ncurses fastfetch` |
-| omega | `omg` | OpenWrt 18.06 | MIPS | ash/busybox, pfetch, no fastfetch |
+| alpine | `gpd` | Alpine 3.24 | x86_64 | requires `apk add bash bash-completion ncurses fastfetch` |
+| openwrt | `omg` | OpenWrt 18.06 | MIPS | ash/busybox, pfetch, no fastfetch |
 | zro | `zro` | (undocumented) | — | — |
 
 ## Deployment
@@ -64,10 +65,12 @@ Manual scp/rsync per host. Each host's dotfiles are installed to `~/` in the res
 - **QNAP**: copy `merged-qnap/.bashrc` + `merged-qnap/.bash_functions` +
   `merged-qnap/.bash_logout` + `merged/.bash_aliases` +
   `merged-qnap/.bash_aliases_local`
-- **gpd**: copy `merged/` files + `merged-gpd/.bash_aliases_local` (apk overrides)
-- **omega**: copy `merged-omega/.bash_aliases` + `merged-omega/.profile` (its own ash-compatible set)
+- **alpine**: copy `merged/` files + `merged-alpine/.bash_aliases_local` (apk overrides)
+- **openwrt**: copy `merged-openwrt/.bash_aliases` + `merged-openwrt/.profile` (its own ash-compatible set)
 
-Connection details live in local `~/.ssh/config`; only host alias names are referenced here.
+Connection details live in local `~/.ssh/config`; only host alias names are referenced here. For
+a one-shot deploy across all hosts: `./deploy.sh` (probes each host's OS remotely, picks the
+per-OS manifest, skips unreachable hosts with a summary). See `./deploy.sh --help`.
 
 ## Secret scanning
 
