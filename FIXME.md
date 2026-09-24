@@ -10,22 +10,14 @@ and easier to deploy.
 - [ ] Add `tools/install-hooks.sh` and a tracked pre-commit hook so the gitleaks
   check is reproducible after a fresh clone. The current hook is local to
   `.git/hooks/` and is not tracked.
-- [ ] Add a dry-run-capable `install.sh`/`deploy.sh` that detects the target
-  shell and OS, selects the correct host variant, creates timestamped backups,
-  validates files before deployment, and installs with safe permissions.
+- [ ] Add timestamped backups and pre-deploy validation/permissions handling to
+  `deploy.sh` (OS detection, dry-run, and host-variant selection are done).
 - [ ] Remove or sanitize machine-specific information before publishing:
   usernames, email addresses, Windows paths, hostnames, and the Wake-on-LAN
   MAC address should be placeholders or local overrides.
 
 ## Portability and maintainability
 
-- [x] Reduce duplication between `merged/.bash_aliases`,
-  `merged-qnap/.bash_aliases`, and `merged-alpine/.bash_aliases`. Keep common
-  aliases in one source and generate or layer host-specific overrides.
-- [x] Rework the OpenWrt configuration so it sources only a deliberately
-  BusyBox/ash-compatible alias set. The shared aliases currently include
-  GNU- and Debian-specific options such as `rm -Iv --one-file-system
-  --preserve-root`.
 - [ ] Make VS Code settings portable by separating shared settings from
   machine-specific SSH paths, usernames, and host aliases.
 - [ ] Add a top-level workspace README describing the independent repositories
