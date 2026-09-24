@@ -12,8 +12,10 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
   `__LS_OPTIONS='-h'`). Keep the sync'd part in sync.
 - `merged-gpd/` — `.bash_aliases` = sync'd copy of `merged/` **plus a trailing
   Alpine/apk override section** (uu, uug, aai, aas). Keep the sync'd part in sync.
-- `merged-omega/` — `.profile` is the omega config; it sources the *deployed*
-  `~/.bash_aliases` (the shared file) at runtime, so there is no copy here.
+- `merged-omega/` — omega config: a deliberately **BusyBox/ash-compatible**
+  `.bash_aliases` (no GNU/Debian-specific flags like `rm -Iv`, `ls --color`,
+  apt) plus a `.profile` that sources it. This is NOT a sync'd copy of
+  `merged/`; keep it standalone.
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
@@ -38,7 +40,7 @@ Standard deploy = push `merged/` files to `~/` on the host.
 | zot | `zot` | `merged/` | fastfetch 2.40.4-debug at `/usr/bin/fastfetch` | Debian 13 x86_64 |
 | qnap | `qnap` (home /root) | `merged-qnap/` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
 | gpd | `gpd` | `merged/` + `merged-gpd/.bash_aliases` | fastfetch (`apk add fastfetch`) | Alpine 3.24, needs ncurses for tput (prompt is ANSI-only now) |
-| omega | `omg` (home /root) | `merged-omega/.profile` + shared aliases | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |
+| omega | `omg` (home /root) | `merged-omega/` (aliases + profile) | pfetch `~/.pfetch` | OpenWrt ash/busybox, only curl-less `wget` |
 
 ## Known environment limits per host
 
@@ -62,17 +64,17 @@ Standard deploy = push `merged/` files to `~/` on the host.
 ## Aliases/functions conventions
 
 - Everything lives in `merged/.bash_aliases` / `merged/.bash_functions`.
-- Host-specific only overrides in the per-host suffix (Alpine apk block, omega
-  overrides in its `.profile`).
+- Host-specific only overrides in the per-host suffix (Alpine apk block); the
+  omega aliases are a standalone ash-compatible set in `merged-omega/`.
 - `spd` is a FUNCTION in `.bash_functions` (bash hosts, curl+awk MB summary);
-  on omega it is a wget alias defined in its `.profile`.
+  on omega it is a wget alias in `merged-omega/.bash_aliases`.
 
 ## Deployment
 
 - Standard bash hosts: copy `merged/{.bashrc,.bash_aliases,.bash_functions,.bash_profile,.profile,.bash_logout,.vimrc}`
   to `~/` on the host.
 - qnap: no scp, home is /root — pipe file contents over ssh into `~`.
-- omega: deploy `merged/.bash_aliases` and `merged-omega/.profile` only.
+- omega: deploy `merged-omega/.bash_aliases` and `merged-omega/.profile` only.
 - gpd: `merged/` files plus `merged-gpd/.bash_aliases` (apk overrides).
 - local x270: `cp merged/{...} ~/`.
 - rui/fata: dotfiles are symlinks (dotfiles-manager), scp follows them.

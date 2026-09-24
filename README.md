@@ -24,8 +24,8 @@ merged-gpd/             Alpine 3.24 (no ncurses, apk-based)
 └── .bash_aliases       shared aliases + apk uu/uug/aai/aas overrides
 
 merged-omega/           OpenWrt 18.06 MIPS (ash, busybox-only)
-└── .profile            ash-compatible, sources shared aliases, pfetch banner,
-                        custom overrides (vim→vi, spd→OVH wget)
+├── .bash_aliases       deliberately ash/busybox-compatible set (no GNU flags)
+└── .profile            sources the omega aliases, pfetch banner, PATH
 
 windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
 ├── settings.json       sanitized, portable config (theme + fonts + profiles)
@@ -63,7 +63,7 @@ Manual scp/rsync per host. Each host's dotfiles are installed to `~/` in the res
 - **Local x270**: copy `merged/` files to `~/`
 - **QNAP**: copy `merged-qnap/` files (QNP-specific .bashrc + shared aliases/functions)
 - **gpd**: copy `merged/` files + `merged-gpd/.bash_aliases` (apk overrides)
-- **omega**: copy `merged-omega/.profile` + shared `merged/.bash_aliases` (no .bash_functions — ash can't source it)
+- **omega**: copy `merged-omega/.bash_aliases` + `merged-omega/.profile` (its own ash-compatible set)
 
 Connection details live in local `~/.ssh/config`; only host alias names are referenced here.
 
