@@ -21,6 +21,7 @@
 #   ./deploy.sh                 deploy everything
 #   ./deploy.sh --hosts "m9 alp" deploy only those hosts (still does local)
 #   ./deploy.sh --dry-run       show what would be deployed
+#   ./deploy.sh --local-only    deploy only to the current machine (no SSH)
 #   ./deploy.sh --fail-fast     stop on first unreachable/failing host
 #   DEPLOY_OS=alpine ./deploy.sh --hosts gpd   force an OS manifest (ssh alias)
 #   DEPLOY_OS=openwrt ./deploy.sh --hosts omg  force an OS manifest (ssh alias)
@@ -33,6 +34,7 @@ SSH_CONFIG="$HOME/.ssh/config"
 SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=4)
 DRY_RUN=0
 FAIL_FAST=0
+LOCAL_ONLY=0
 ONLY_HOSTS=""
 EXIT_CODE=0
 
@@ -49,6 +51,7 @@ while [ $# -gt 0 ]; do
         --hosts)   ONLY_HOSTS="$2"; shift 2 ;;
         --dry-run) DRY_RUN=1; shift ;;
         --fail-fast) FAIL_FAST=1; shift ;;
+        --local-only) LOCAL_ONLY=1; shift ;;
         -h|--help)
             sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
             exit 0 ;;
@@ -152,6 +155,11 @@ log "== deploying from $REPO_DIR =="
 MY_HOST="$(hostname | cut -d. -f1)"
 
 deploy_local
+
+if [ "$LOCAL_ONLY" = 1 ]; then
+    log "== local deployment complete; skipping SSH hosts =="
+    exit 0
+fi
 
 if [ -r "$SSH_CONFIG" ]; then
     # top-level Host aliases from ~/.ssh/config (in file order, no wildcards),
