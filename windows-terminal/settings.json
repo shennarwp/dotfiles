@@ -5,35 +5,51 @@
     "alwaysShowTabs": false,
     "copyOnSelect": true,
     "defaultProfile": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
-    "keybindings": [],
-    "newTabMenu": [ 
+    "keybindings":
+    [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "language": "en-US",
+    "newTabMenu":
+    [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
-            "font": 
+            "colorScheme": "Monokai Remastered",
+            "font":
             {
-                "face": "FantasqueSansMono Nerd Font Mono",
+                "face": "FantasqueSansM Nerd Font",
                 "size": 16
             }
         },
-        "list": 
+        "list":
         [
             {
-                "font": 
-                {
-                    "face": "Fantasque Sans Mono",
-                    "size": 20
-                },
+                "colorScheme": "Monokai Remastered",
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
                 "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
                 "hidden": false,
                 "name": "Windows PowerShell"
             },
             {
+                "colorScheme": "Monokai Remastered",
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
                 "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
                 "hidden": false,
                 "name": "cmd"
@@ -48,13 +64,37 @@
                 "colorScheme": "Monokai Remastered",
                 "guid": "{58ad8b0c-3ef8-5f4d-bc6f-13e4c00f2530}",
                 "hidden": false,
+                "icon": "C:\\Users\\ShennaPiri\\Dropbox\\personal\\shenna\\debian-logo-1024x576.png",
                 "name": "Debian",
                 "source": "Windows.Terminal.Wsl"
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
+        {
+            "background": "#FFFFFF",
+            "black": "#2E1742",
+            "blue": "#0D6BAD",
+            "brightBlack": "#462366",
+            "brightBlue": "#008CCC",
+            "brightCyan": "#46D1E0",
+            "brightGreen": "#99C252",
+            "brightPurple": "#AF87FF",
+            "brightRed": "#FF0000",
+            "brightWhite": "#FFFFFF",
+            "brightYellow": "#A39B46",
+            "cursorColor": "#000000",
+            "cyan": "#41C2D0",
+            "foreground": "#051840",
+            "green": "#77B01B",
+            "name": "Contrast Light",
+            "purple": "#8700FF",
+            "red": "#BF0000",
+            "selectionBackground": "#B5D5FF",
+            "white": "#E6E6E6",
+            "yellow": "#857E39"
+        },
         {
             "background": "#0C0C0C",
             "black": "#1A1A1A",
@@ -79,6 +119,9 @@
             "yellow": "#FD971F"
         }
     ],
+    "searchWebDefaultQueryUrl": "https://www.google.de/search?q=%22%s%22",
+    "tabWidthMode": "titleLength",
+    "theme": "dark",
     "themes": [],
     "useAcrylicInTabRow": false,
     "warning.largePaste": false
