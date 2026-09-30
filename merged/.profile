@@ -10,9 +10,14 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 # set PATH so it includes the user's private bin directories if they exist.
+# idempotent: .profile is sourced again by every login shell (and by
+# .bash_profile), so a plain prepend would duplicate entries in $PATH.
 for d in "$HOME/bin" "$HOME/.local/bin"; do
     if [ -d "$d" ]; then
-        PATH="$d:$PATH"
+        case ":$PATH:" in
+            *":$d:"*) ;;
+            *) PATH="$d:$PATH" ;;
+        esac
     fi
 done
 export PATH

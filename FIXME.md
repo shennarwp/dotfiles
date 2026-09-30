@@ -6,19 +6,15 @@ is done and no longer tracked here.
 
 ## High priority
 
-- [ ] **Deploy the pending `merged/` changes to the fleet.** The guarded Linuxbrew
-  `shellenv`, `PROMPT_COMMAND` append, and `seq`-free `allcolors` exist only in
-  the repo. This clone has no `~/.ssh/config`, so `./deploy.sh` currently can
-  only deploy locally — recreate the config, then `./deploy.sh --dry-run`.
+- [ ] **Deploy the pending `merged/` changes to the remote fleet.** The guarded
+  Linuxbrew `shellenv`, `PROMPT_COMMAND` append, and `seq`-free `allcolors` are
+  live on x270 (deployed 2026-09-30 via `./deploy.sh --local-only`) but not on
+  any remote host. This clone has no `~/.ssh/config`, so `./deploy.sh` can only
+  deploy locally — recreate the config, then `./deploy.sh --dry-run`.
 - [ ] **`deploy.sh`: back up before overwriting.** `deploy_local` and `push`
   replace `~/.bashrc` etc. with no backup. Create
   `~/.dotfiles-backup-YYYYMMDD-HHMMSS/` (or per-file `.bak`) like the manual
   host backups, and set sane permissions (0644) on what it writes.
-- [ ] **Stop deploying over the local `.local/bin` PATH guard.** `~/.profile` and
-  `~/.bash_profile` on x270 carry an idempotent
-  `case ":$PATH:" in *":$HOME/.local/bin:"*)` line that `merged/` lacks, so a
-  local deploy silently drops it. Fold the guard into `merged/.profile` and
-  `merged/.bash_profile`.
 - [ ] **Remove machine-specific data from tracked files** before this repo goes
   anywhere public:
   - `merged/.bash_aliases`: Wake-on-LAN MAC (`wakex41`), the Cygwin/OneDrive

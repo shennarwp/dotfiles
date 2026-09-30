@@ -134,12 +134,11 @@ for you yet — see FIXME.md.
 - Updated ANSI-only `.bashrc` (no tput) deployed to alpine and local `~` only;
   other hosts still run the tput-gated older `.bashrc`. Push to m9/alp/rui/fata
   when convenient.
-- **Repo-only as of Sep 2026 (not yet on any host):** guarded Linuxbrew
-  `shellenv`, `PROMPT_COMMAND` append instead of replace, `seq`-free
-  `allcolors`. Run `./deploy.sh` to push.
-- Local `~/.profile` and `~/.bash_profile` hold an idempotent `.local/bin` PATH
-  guard that `merged/` does not; deploying locally will drop it. Fold the guard
-  into `merged/.profile` before the next local deploy.
+- **Live on x270 since 2026-09-30** (`./deploy.sh --local-only`, backup at
+  `~/.dotfiles-backup-20260930-225618`): guarded Linuxbrew `shellenv`,
+  `PROMPT_COMMAND` append instead of replace, `seq`-free `allcolors`, and the
+  idempotent `.local/bin` PATH loop in `merged/.profile`. The remote hosts still
+  need `./deploy.sh` once `~/.ssh/config` is back.
 - **GPG key migrated Cygwin → WSL (Sep 2026).** Key `C06C4DD034067569` (Shenna,
   shennawew@outlook.com) imported into WSL gpg 2.4.7, trust ultimate, Cygwin
   keyring emptied (backup at `~/cygwin-gnupg-backup-20260913-232224/`). In this
