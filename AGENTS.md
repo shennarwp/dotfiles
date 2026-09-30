@@ -35,6 +35,7 @@ Rules of thumb:
   deploy locally.
 - Every tracked text file ends with a newline (`tools/validate.sh --fix-newlines`
   repairs it); `*.rayconfig` is binary per `.gitattributes` and is exempt.
+- Work on a branch and land it through a PR — see **Git workflow** below.
 
 ## Hosts & deployment map (status Sept 2026)
 
@@ -79,6 +80,31 @@ Standard deploy = push `merged/` files to `~/` on the host.
   ash-compatible set in `merged-openwrt/`.
 - `spd` is a FUNCTION in `.bash_functions` (bash hosts, curl+awk MB summary);
   on openwrt it is a wget alias in `merged-openwrt/.bash_aliases`.
+
+## Git workflow
+
+**Never push to `master`. Always go through a pull request.**
+
+```bash
+tools/validate.sh                       # pre-commit check (also runs via hook)
+git checkout -b <type>/<slug>            # e.g. fix/path-guard, feat/nvm
+git add -A && git commit                # hook runs tools/validate.sh --hook
+git push -u origin <branch>
+gh pr create --base master --head <branch> --title "..." --body "..."
+```
+
+- The repo is public and `master` is covered by the `protect-master` ruleset
+  (`pull_request` rule, 0 required approvals). Direct pushes print
+  `Changes must be made through a pull request`; they only land because the
+  local SSH key / `gh` token has a ruleset bypass. Do not rely on that.
+- Commit style follows history: `fix(scope):`, `feat(scope):`, `docs:`, `chore:`.
+  Subject line, blank line, then the what/why in the body.
+- Leave the PR unmerged unless the user asks. GitHub may report
+  `BLOCKED` (GitGuardian merge protection / Copilot review rule) even when the
+  security check says "No secrets detected" — that is the app's policy, so ask
+  before using `gh pr merge --admin`.
+- After a merge: `git checkout master && git pull`, delete the local feature
+  branch, and delete the remote one (`gh pr merge --delete-branch` does both).
 
 ## Deployment
 
