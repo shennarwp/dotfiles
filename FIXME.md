@@ -35,9 +35,6 @@ is done and no longer tracked here.
   and is embedded in the terminal title; fall back to `hostname` when `-f` is
   unsupported (older busybox). Same treatment for `whoami`/`id -un`/`basename`
   where used in the prompt.
-- [ ] **Guard hardcoded tool paths in `merged/.bashrc`** so hosts without the tool
-  get a clean `PATH`: `GOROOT=/usr/local/go`, `GOPATH`, and the
-  `$HOME/.opencode/bin` prepend.
 - [ ] **Improve history defaults**: `HISTTIMEFORMAT`, `shopt -s lithist`,
   `cmdhist` for multiline commands (remember: QNAP runs bash 3.2, so no
   `HISTTIMEFORMAT` features that require newer bash).

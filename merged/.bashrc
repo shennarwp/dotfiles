@@ -266,14 +266,29 @@ fi
 # --- environment ------------------------------------------------------------
 umask 022
 
-# per-tool paths (machine specific; harmless elsewhere)
-export PATH=$HOME/.opencode/bin:$PATH
-export GOROOT=/usr/local/go
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+# prepend directories to PATH, each at most once
+# (.bashrc is re-sourced by the `src` alias, so a plain prepend would
+#  accumulate duplicate entries)
+function __path_prepend() {
+    local d
+    for d in "$@"; do
+        [ -d "$d" ] || continue
+        case ":$PATH:" in
+            *":$d:"*) ;;
+            *) PATH="$d:$PATH" ;;
+        esac
+    done
+}
 
-if [ -d "$HOME/bin" ]; then
-    PATH="$HOME/bin:$PATH"
+# per-tool paths (missing dirs are skipped, so hosts without a tool keep a
+# clean PATH; manygit ships in ~/.local/bin)
+__path_prepend "$HOME/.opencode/bin" "$HOME/bin" "$HOME/.local/bin"
+
+# Go toolchain, only where it is actually installed
+if [ -x /usr/local/go/bin/go ]; then
+    export GOROOT=/usr/local/go
+    export GOPATH="$HOME/go"
+    __path_prepend "$GOROOT/bin" "$GOPATH/bin"
 fi
 
 export PATH
@@ -298,8 +313,7 @@ if [ -x "$(command -v fastfetch)" ] && [ -z "$FASTFETCH_RAN" ]; then
     export FASTFETCH_RAN=1
 fi
 
-# manygit
-export PATH="$HOME/.local/bin:$PATH"
+# manygit: ships in ~/.local/bin, already added to PATH above
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -307,7 +321,14 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # homebrew (Linuxbrew; present only on hosts that installed it — keep the guard
-# so hosts without it don't print an error on every new shell)
-if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+# so hosts without it don't print an error on every new shell). Skip when its
+# bin is already in PATH: `brew shellenv` prepends unconditionally, so running
+# it on every `src` would duplicate entries.
+BREW_BIN=/home/linuxbrew/.linuxbrew/bin
+if [ -x "$BREW_BIN/brew" ]; then
+    case ":$PATH:" in
+        *":$BREW_BIN:"*) ;;
+        *) eval "$("$BREW_BIN/brew" shellenv bash)" ;;
+    esac
+    unset BREW_BIN
 fi

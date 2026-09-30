@@ -134,11 +134,14 @@ for you yet — see FIXME.md.
 - Updated ANSI-only `.bashrc` (no tput) deployed to alpine and local `~` only;
   other hosts still run the tput-gated older `.bashrc`. Push to m9/alp/rui/fata
   when convenient.
-- **Live on x270 since 2026-09-30** (`./deploy.sh --local-only`, backup at
-  `~/.dotfiles-backup-20260930-225618`): guarded Linuxbrew `shellenv`,
-  `PROMPT_COMMAND` append instead of replace, `seq`-free `allcolors`, and the
-  idempotent `.local/bin` PATH loop in `merged/.profile`. The remote hosts still
-  need `./deploy.sh` once `~/.ssh/config` is back.
+- **Live on x270 since 2026-09-30** (`./deploy.sh --local-only`, backups at
+  `~/.dotfiles-backup-20260930-225618/` and `~/.dotfiles-backup-20260930-230147/`):
+  guarded Linuxbrew `shellenv`, `PROMPT_COMMAND` append instead of replace,
+  `seq`-free `allcolors`, the idempotent PATH handling (`__path_prepend` in
+  `merged/.bashrc`, guarded loop in `merged/.profile` and
+  `merged-openwrt/.profile`, `src` no longer grows `$PATH`), and `GOROOT`/`GOPATH`
+  only exported where Go is installed. The remote hosts still need
+  `./deploy.sh` once `~/.ssh/config` is back.
 - **GPG key migrated Cygwin → WSL (Sep 2026).** Key `C06C4DD034067569` (Shenna,
   shennawew@outlook.com) imported into WSL gpg 2.4.7, trust ultimate, Cygwin
   keyring emptied (backup at `~/cygwin-gnupg-backup-20260913-232224/`). In this
