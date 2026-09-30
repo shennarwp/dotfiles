@@ -1,0 +1,30 @@
+# local-only overrides (the tracked ones live in merged-qnap/ and merged-alpine/)
+/.bash_aliases_local
+
+# backups produced by deploy.sh / manual copies
+.dotfiles-backup-*/
+*.bak
+*.orig
+*.rej
+*~
+
+# scratch and logs
+tmp/
+*.log
+
+# generated output (shared with sibling repos)
+coverage/
+*.lcov
+.nyc_output/
+*.tsbuildinfo
+build-info/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# gitleaks working files
+.gitleaks-baseline.json
+gitleaks-report.*

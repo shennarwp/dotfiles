@@ -37,7 +37,15 @@ vscode/                 Windows VS Code config for remote development over WSL
 ├── wsl-ssh.bat         helper that proxies SSH calls through WSL
 └── README.md           deploy instructions and notes
 
+.githooks/pre-commit    tracked pre-commit hook -> tools/validate.sh --hook
+tools/                  repo tooling
+├── validate.sh         syntax, vimrc, drift, newlines, JSON, gitleaks
+├── install-hooks.sh    install/uninstall the tracked hooks in .git/hooks
+└── install-tools.sh    install gitleaks (and shellcheck, if apt)
+
 .gitleaks.toml          secret-scan config (used by the pre-commit hook)
+.gitattributes          LF everywhere, raycast exports marked binary
+.gitignore              backups, logs, coverage/build output, OS cruft
 deploy.sh               one-shot deploy to all hosts (probes OS, per-OS manifests)
 ```
 
@@ -68,15 +76,46 @@ Manual scp/rsync per host. Each host's dotfiles are installed to `~/` in the res
 - **alpine**: copy `merged/` files + `merged-alpine/.bash_aliases_local` (apk overrides)
 - **openwrt**: copy `merged-openwrt/.bash_aliases` + `merged-openwrt/.profile` (its own ash-compatible set)
 
-Connection details live in local `~/.ssh/config`; only host alias names are referenced here. For
-a one-shot deploy across all hosts: `./deploy.sh` (probes each host's OS remotely, picks the
-per-OS manifest, skips unreachable hosts with a summary). See `./deploy.sh --help`.
+Connection details live in local `~/.ssh/config` (only host alias names are
+referenced here). If that file is missing, `deploy.sh` says so and deploys to the
+local machine only. For a one-shot deploy across all hosts: `./deploy.sh` (probes
+each host's OS remotely, picks the per-OS manifest, skips unreachable hosts with a
+summary). See `./deploy.sh --help`.
+
+## Checks
+
+```bash
+tools/validate.sh              # syntax, vimrc, drift, newlines, JSON, gitleaks
+tools/validate.sh --hook       # pre-commit subset (staged changes only)
+tools/install-tools.sh         # install gitleaks (and shellcheck via apt)
+tools/install-hooks.sh         # install the tracked hook into .git/hooks
+```
+
+`merged-qnap/.bash_functions` and `merged-qnap/.bash_logout` are synced copies of
+their `merged/` originals; `tools/validate.sh` fails if they drift. After editing
+`merged/.bash_functions` (or `.bash_logout`), run:
+
+```bash
+cp merged/.bash_functions merged-qnap/.bash_functions
+cp merged/.bash_logout    merged-qnap/.bash_logout
+```
 
 ## Secret scanning
 
-`gitleaks` (at `~/bin/gitleaks`) runs from the `.git/hooks/pre-commit` hook on every
-commit via `gitleaks detect --pipe --config .gitleaks.toml`. No secrets, ports, IPs,
-or usernames are tracked in this repo.
+The hook source is tracked in `.githooks/pre-commit` and installed with
+`tools/install-hooks.sh` (`.git/hooks/` itself is not tracked). It runs
+`tools/validate.sh --hook`, whose gitleaks pass scans the staged diff:
+
+```bash
+gitleaks git --staged --config .gitleaks.toml   # what the hook runs
+gitleaks git --config .gitleaks.toml            # full history (validate.sh)
+```
+
+`gitleaks` lives in `~/bin/gitleaks` (installed by `tools/install-tools.sh`).
+Tracked files still contain some machine-specific data (a Wake-on-LAN MAC
+address, a Windows user path) — see FIXME.md, sanitizing them is pending.
+
+Bypass for one commit with `git commit --no-verify`.
 
 ## Legacy
 

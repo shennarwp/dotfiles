@@ -16,16 +16,25 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
   **BusyBox/ash-compatible** `.bash_aliases` (no GNU/Debian-specific flags like
   `rm -Iv`, `ls --color`, apt) plus a `.profile` that sources it. This is NOT a
   sync'd copy of `merged/`; keep it standalone.
+- `tools/` — `validate.sh` (syntax, vimrc, qnap drift, trailing newlines, JSON,
+  gitleaks), `install-hooks.sh` (tracked hooks → `.git/hooks`), `install-tools.sh`
+  (gitleaks/shellcheck).
+- `.githooks/pre-commit` — tracked hook source; run `tools/install-hooks.sh` after
+  a fresh clone (`.git/hooks/` is not tracked).
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
 - Per-host alias overrides live in `merged-qnap/.bash_aliases_local` and
   `merged-alpine/.bash_aliases_local`, sourced from `.bashrc` after the common
   `.bash_aliases`.
-- After editing `merged/.bash_functions`, sync:
-  `cp merged/.bash_functions merged-qnap/.bash_functions`.
+- After editing `merged/.bash_functions` (or `.bash_logout`), sync:
+  `cp merged/.bash_functions merged-qnap/.bash_functions` and
+  `cp merged/.bash_logout merged-qnap/.bash_logout`. `tools/validate.sh` fails
+  when they drift.
 - After editing `merged/.bashrc`, also sync local copy `~/.bashrc` when you
   deploy locally.
+- Every tracked text file ends with a newline (`tools/validate.sh --fix-newlines`
+  repairs it); `*.rayconfig` is binary per `.gitattributes` and is exempt.
 
 ## Hosts & deployment map (status Sept 2026)
 
@@ -88,30 +97,57 @@ Standard deploy = push `merged/` files to `~/` on the host.
 ## Always run before deploying
 
 ```bash
-bash -n merged/.bashrc merged/.bash_aliases merged/.bash_functions merged-qnap/*.bash*
+tools/validate.sh
 ```
+
+That covers `bash -n` on every tracked shell file, the vimrc source check, qnap
+copy drift, trailing newlines, JSON/JSONC, and gitleaks. `--hook` is the
+pre-commit subset; `--fix-newlines` repairs missing final newlines.
+
+Note for hand-rolled checks: `*` does not match a leading dot, so
+`merged-qnap/*.bash*` matches nothing. Spell the files out
+(`merged-qnap/.bashrc merged-qnap/.bash_functions ...`) or use
+`tools/validate.sh`.
 
 ## Backups pattern
 
 When editing a host's live dotfiles, make a backup dir like
 `~/.dotfiles-backup-YYYYMMDD-HHMMSS/` (see host backups,
-e.g. local `~/.dotfiles-backup-20260912-231104`).
+e.g. local `~/.dotfiles-backup-20260912-231104`). `deploy.sh` does not do this
+for you yet — see FIXME.md.
 
 ## Parked work
 
-- 
+- Hooks/tooling are in place (`tools/` + `.githooks/`); nothing parked there.
+- Still open: sanitize machine-specific data from tracked files, make
+  `deploy.sh` back up before overwriting, add CI, and run the deployment-matrix
+  tests. See FIXME.md for the full list.
 
 ## Todo / known deltas
 
 - `~/.ssh/config` (local) has CRLF line endings; host aliases there had a
   trailing `\r` that broke `deploy.sh` until it started stripping CR. Keep
   that gentle in any new tooling.
+- **This clone has no `~/.ssh/config`**, so `deploy.sh` finds no remote hosts and
+  only deploys locally. Recreate the config (fleet aliases) before relying on
+  fleet deploys; `gpd`/`omg`/`qnap` are the non-obvious alias names.
 - Updated ANSI-only `.bashrc` (no tput) deployed to alpine and local `~` only;
   other hosts still run the tput-gated older `.bashrc`. Push to m9/alp/rui/fata
   when convenient.
-- **DONE (Sep 2026): GPG key migrated Cygwin → WSL.** Key
-  `C06C4DD034067569` (Shenna, shennawew@outlook.com) imported into WSL gpg
-  2.4.7, trust ultimate, Cygwin keyring emptied (backup at
-  `~/cygwin-gnupg-backup-20260913-232224/`). Git signing enabled repo-local
-  (`user.signingkey C06C4DD034067569`, `commit.gpgsign true`). The other two
-  GPG keys were removed from GitHub; only `C06C4DD034067569` remains.
+- **Repo-only as of Sep 2026 (not yet on any host):** guarded Linuxbrew
+  `shellenv`, `PROMPT_COMMAND` append instead of replace, `seq`-free
+  `allcolors`. Run `./deploy.sh` to push.
+- Local `~/.profile` and `~/.bash_profile` hold an idempotent `.local/bin` PATH
+  guard that `merged/` does not; deploying locally will drop it. Fold the guard
+  into `merged/.profile` before the next local deploy.
+- **GPG key migrated Cygwin → WSL (Sep 2026).** Key `C06C4DD034067569` (Shenna,
+  shennawew@outlook.com) imported into WSL gpg 2.4.7, trust ultimate, Cygwin
+  keyring emptied (backup at `~/cygwin-gnupg-backup-20260913-232224/`). In this
+  clone `user.signingkey` is set but `commit.gpgsign` is `false`; re-enable with
+  `git config --local commit.gpgsign true` if signed commits are wanted. The
+  other two GPG keys were removed from GitHub; only `C06C4DD034067569` remains.
+- `gitleaks` is installed at `~/bin/gitleaks` (8.30.1) by `tools/install-tools.sh`
+  and uses the v8.19+ CLI (`gitleaks git [--staged]`); the old
+  `gitleaks detect --pipe` from older docs no longer exists.
+- `shellcheck` is still absent on this machine, so `tools/validate.sh` reports
+  that pass as SKIP; `tools/install-tools.sh` installs it via apt.

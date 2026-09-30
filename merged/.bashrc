@@ -231,7 +231,11 @@ if [ ! -n "${HOST_COLOR}" ]; then
 }
 
 if [ "$color_prompt" = yes ]; then
-    PROMPT_COMMAND=__makePS1
+    # append (never clobber): keep hooks set by bash_completion, virtualenv, direnv...
+    case ";${PROMPT_COMMAND};" in
+        *";__makePS1;"*) ;;
+        *) PROMPT_COMMAND="__makePS1${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+    esac
     PS2="\[${BPurple}\]>\[${Color_Off}\] " # continuation prompt
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ \n'
@@ -302,5 +306,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# homebrew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+# homebrew (Linuxbrew; present only on hosts that installed it — keep the guard
+# so hosts without it don't print an error on every new shell)
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+fi

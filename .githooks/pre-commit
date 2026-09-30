@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# pre-commit — run the repo checks before every commit.
+# Installed by tools/install-hooks.sh (copy lives in .git/hooks/, this file is
+# the tracked source of truth). Fast subset: bash syntax, drift, newlines,
+# JSON, and a gitleaks scan of the staged changes only.
+#
+# Bypass for a single commit with:  git commit --no-verify
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "pre-commit: not inside a git repository" >&2
+    exit 1
+}
+
+exec "$ROOT/tools/validate.sh" --hook "$@"

@@ -139,7 +139,11 @@ function __makePS1() {
 }
 
 if [ "$color_prompt" = yes ]; then
-    PROMPT_COMMAND=__makePS1
+    # append (never clobber): keep hooks set by other startup files
+    case ";${PROMPT_COMMAND};" in
+        *";__makePS1;"*) ;;
+        *) PROMPT_COMMAND="__makePS1${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+    esac
     PS2="\[${BPurple}\]>\[${Color_Off}\] " # continuation prompt
 else
     PS1='\u@\h:\w\$ \n'

@@ -48,7 +48,13 @@ ALPINE_LOCAL_FILE="merged-alpine/.bash_aliases_local"
 # --- argument parsing -------------------------------------------------------
 while [ $# -gt 0 ]; do
     case "$1" in
-        --hosts)   ONLY_HOSTS="$2"; shift 2 ;;
+        --hosts)
+            if [ $# -lt 2 ]; then
+                echo "deploy.sh: --hosts requires a space-separated host list" >&2
+                echo "deploy.sh: (see --help)" >&2
+                exit 2
+            fi
+            ONLY_HOSTS="$2"; shift 2 ;;
         --dry-run) DRY_RUN=1; shift ;;
         --fail-fast) FAIL_FAST=1; shift ;;
         --local-only) LOCAL_ONLY=1; shift ;;

@@ -1,0 +1,25 @@
+# default: detect text, keep LF in the index
+* text=auto eol=lf
+
+# shell config must stay LF (openwrt/ash, QNAP, WSL all choke on CRLF)
+*.sh text eol=lf
+.bashrc text eol=lf
+.bash_aliases text eol=lf
+.bash_aliases_local text eol=lf
+.bash_functions text eol=lf
+.bash_profile text eol=lf
+.bash_logout text eol=lf
+.profile text eol=lf
+.vimrc text eol=lf
+deploy.sh text eol=lf
+
+# editors / terminals / markdown
+*.md text eol=lf
+*.json text eol=lf
+*.theme text eol=lf
+*.sublime-settings text eol=lf
+*.sublime-keymap text eol=lf
+*.toml text eol=lf
+
+# binary export: never diff, never EOL-translate
+*.rayconfig binary
