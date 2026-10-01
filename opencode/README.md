@@ -1,0 +1,198 @@
+# opencode + 9router
+
+Setup for [opencode](https://opencode.ai) on WSL/Linux, routed through the
+9router gateway so every model comes from one place.
+
+Target state after following this doc:
+
+- `opencode` on PATH, talking to 9router at `$NINEROUTER_URL`
+- 29 chat models discovered from the gateway (gemini / cloudflare / nvidia)
+- 4 `oc/*` "OpenCode Free" models visible in the picker
+- 8 `9router-*` capability skills installed locally
+
+## Quick start
+
+```bash
+./install.sh
+source ~/.bashrc
+opencode models | grep -E '^(9router|oc-free)'
+opencode
+```
+
+`install.sh` is idempotent — re-run it any time. It never writes the API key
+into this repo; the key goes into `~/.bashrc` and opencode's auth store only.
+
+## Prerequisites
+
+| Thing | Notes |
+|---|---|
+| opencode | `npm install -g opencode-ai`, or any other install method |
+| A 9router key | Dashboard → Keys. Needed unless the gateway runs with `requireApiKey=false` |
+| `curl` | used for the health check and the skills download |
+| Reachable gateway | `curl $NINEROUTER_URL/api/health` → `{"ok":true}` |
+
+## 1. Install opencode
+
+```bash
+npm install -g opencode-ai
+opencode --version
+```
+
+Any other install method is fine — only the binary on PATH matters.
+
+## 2. Environment
+
+Two variables, both in `~/.bashrc`:
+
+```bash
+export NINEROUTER_URL="http://9router.m9.home.arpa"
+export NINEROUTER_KEY="sk-..."      # Dashboard → Keys
+```
+
+Verify:
+
+```bash
+curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
+# {"ok":true}
+```
+
+`NINEROUTER_URL` and `NINEROUTER_KEY` are also the names the 9router skills
+expect, so setting them makes every command in those skills work verbatim.
+
+## 3. Config
+
+Copy [`opencode.jsonc`](opencode.jsonc) to `~/.config/opencode/opencode.jsonc`:
+
+```bash
+cp opencode.jsonc ~/.config/opencode/opencode.jsonc
+```
+
+It defines two providers, both pointing at the same gateway:
+
+| Provider key | Label in UI | Models | Source |
+|---|---|---|---|
+| `9router` | 9Router | auto-discovered | `GET /v1/models` |
+| `oc-free` | OpenCode Free | 4, declared by hand | see "Known quirks" |
+
+Two config details worth keeping:
+
+- `"apiKey": "{env:NINEROUTER_KEY}"` — the key is read from the environment,
+  never stored in the config file.
+- `"cacheTTL": 300000` on `9router` — 5 minutes. The discovery plugin otherwise
+  caches the model list for 3 hours, so newly connected accounts stay invisible.
+  Lower it if you add accounts often.
+
+## 4. Models
+
+```bash
+opencode models | grep -E '^(9router|oc-free)' | head
+```
+
+Expect 29 `9router/*` and 4 `oc-free/oc/*`.
+
+## 5. Capability skills
+
+The gateway exposes more than chat. Install the skill set so the agent knows
+the request shapes:
+
+```bash
+for s in 9router 9router-chat 9router-image 9router-tts 9router-stt \
+         9router-embeddings 9router-web-search 9router-web-fetch; do
+  mkdir -p ~/.config/opencode/skill/$s
+  curl -sfo ~/.config/opencode/skill/$s/SKILL.md \
+    https://raw.githubusercontent.com/decolua/9router/refs/heads/master/skills/$s/SKILL.md
+done
+```
+
+`install.sh` does this already. The entry-point skill documents setup and
+discovery; the rest cover chat, image, tts, stt, embeddings, web search and web
+fetch.
+
+Available on this gateway right now:
+
+| Capability | Endpoint | Models |
+|---|---|---|
+| chat | `/v1/models` | 29 |
+| image | `/v1/models/image` | 14 |
+| tts | `/v1/models/tts` | 5 |
+| embeddings | `/v1/models/embedding` | 6 |
+| stt | `/v1/models/stt` | 5 |
+| web search | `/v1/models/web` | 0 — not connected |
+| image-to-text | `/v1/models/image-to-text` | 0 — not connected |
+
+Model counts follow whatever accounts are connected to the gateway, so they
+will drift. Re-check with the discovery endpoints above.
+
+## Known quirks
+
+Two non-obvious failure modes, both already worked around in the config above.
+Understand them before "fixing" anything that looks broken.
+
+### 9router never lists the `oc/*` models
+
+`curl $NINEROUTER_URL/v1/models | grep -c '"oc/'` returns `0`, even though
+`POST /v1/chat/completions` with `oc/space-bunny-free` returns `200`. This is a
+server-side gap in 9router, not a misconfiguration — nothing in the dashboard
+changes it. Upstream calls it out in the `@haoyiyin/9router` README.
+
+Workaround: declare the four models under a **separate provider key** that does
+not start with `9router` (ours is `oc-free`). The discovery plugin only
+rewrites providers whose key starts with `9router`:
+
+```js
+const providerKeys = Object.keys(provider).filter((k) => k.startsWith("9router"));
+// ...
+entry.models = discovered ?? {};   // unconditional overwrite
+```
+
+So anything declared under `9router` is discarded at startup. `oc-free` is
+invisible to the plugin, so those declarations survive.
+
+### The TUI `/models` filters on credentials
+
+A provider can be present in config and visible to `opencode models`, yet be
+hidden from the in-app `/models` picker. The picker needs an entry in
+opencode's auth store:
+
+```
+~/.local/share/opencode/auth.json
+```
+
+Add the provider with the same key (both providers here share one gateway and
+one key):
+
+```json
+"oc-free": { "type": "api", "key": "<same value as NINEROUTER_KEY>" }
+```
+
+Quit opencode before editing that file — it can overwrite it on exit. Re-verify
+with `opencode providers list`.
+
+The built-in `opencode` provider (OpenCode Zen) also has no credential, so its
+own models stay hidden in the picker. That is expected; they are a separate
+path that bypasses the gateway.
+
+### Screenshot mismatch
+
+"OpenCode Free" appears in the picker under that label, not as `oc-free` or
+`9router` — the `name` field sets the display label. Typing `oc` into the
+filter box matches nothing, because the model labels are `Big Pickle`,
+`Space Bunny Free`, etc. Clear the filter and scroll for the group label.
+
+## Security
+
+- The API key lives in `~/.bashrc` and `~/.local/share/opencode/auth.json`.
+  Both are outside this repo. Keep it that way — `tools/validate.sh` runs
+  gitleaks and the repo is public.
+- `.bashrc` exports are plain text; `chmod 600` on the auth store if the machine
+  is shared.
+- If the gateway key ever leaks, rotate it in the 9router dashboard and update
+  both places.
+
+## Files
+
+| File | Purpose |
+|---|---|
+| `README.md` | this doc |
+| `opencode.jsonc` | config to copy into `~/.config/opencode/` |
+| `install.sh` | idempotent installer for a fresh machine |
