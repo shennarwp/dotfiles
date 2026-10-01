@@ -27,6 +27,10 @@ merged-openwrt/          OpenWrt 18.06 MIPS (ash, busybox-only)
 ├── .bash_aliases       deliberately ash/busybox-compatible set (no GNU flags)
 └── .profile            sources the openwrt aliases, pfetch banner, PATH
 
+backlog/                 Backlog.md task board (one .md file per task)
+├── config.yml          statuses, labels, priorities, DoD defaults
+└── tasks/              the open work items
+
 windows-terminal/       portable Windows Terminal settings (Monokai Remastered)
 ├── settings.json       sanitized, portable config (theme + fonts + profiles)
 ├── schemes/            extracted Monokai Remastered scheme + ANSI mapping
@@ -113,9 +117,43 @@ gitleaks git --config .gitleaks.toml            # full history (validate.sh)
 
 `gitleaks` lives in `~/bin/gitleaks` (installed by `tools/install-tools.sh`).
 Tracked files still contain some machine-specific data (a Wake-on-LAN MAC
-address, a Windows user path) — see FIXME.md, sanitizing them is pending.
+address, a Windows user path) — sanitizing them is tracked as TASK-5.
 
 Bypass for one commit with `git commit --no-verify`.
+
+## Task tracking
+
+Open work is tracked with [Backlog.md](https://github.com/MrLesk/Backlog.md). It
+is a local-only CLI (no server, no account, no telemetry) that keeps one Markdown
+file per task under `backlog/tasks/`, so the board is readable from any clone
+without the tool installed.
+
+```bash
+npm i -g backlog.md            # global install; nothing lands in the repo
+backlog init "dotfiles"        # only needed on a fresh clone
+backlog board                  # terminal kanban
+backlog task list              # open tasks, grouped by priority
+backlog task view TASK-2       # one task in full
+backlog search "deploy"        # fuzzy search across tasks, docs, decisions
+backlog browser                # local web UI on 127.0.0.1:6420
+backlog config list            # show settings
+```
+
+Config lives in `backlog/config.yml`. Notable defaults set for this repo:
+
+- `remote_operations: false` — no git fetches, so the CLI works offline
+- `auto_commit: false` — task edits modify files but do not commit; the pre-commit
+  hook and the normal PR flow still apply
+- `definition_of_done` — every new task gets "tools/validate.sh passes" and
+  "PR opened against master, left unmerged"
+- labels: `deploy`, `validate`, `prompt`, `privacy`, `ci`, `docs`, `tools`,
+  `opencode`, `vscode`
+
+The npm package is named `backlog.md`. Bare `npx backlog` resolves to an unrelated
+third-party package, so always spell out the full name.
+
+`FIXME.md` is now only a pointer to this board; it is kept so existing links do
+not go stale.
 
 ## Legacy
 

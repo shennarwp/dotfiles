@@ -28,6 +28,9 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
   live from `$NINEROUTER_URL/v1/models`. Both client folders read
   `NINEROUTER_URL`/`NINEROUTER_KEY` from the host-local layer; neither
   hardcodes the gateway.
+- `backlog/` — Backlog.md task board, one Markdown file per task under
+  `backlog/tasks/`. This is where open work lives; `FIXME.md` is only a pointer
+  to it. See **Task tracking** below.
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
@@ -134,7 +137,7 @@ gh pr create --base master --head <branch> --title "..." --body "..."
 - **`.bash_aliases_local` is NOT a safe place for secrets on qnap/alpine:**
   those two manifests deploy the tracked `merged-*/.bash_aliases_local` over
   the host's copy, so anything added by hand there is lost. Tracked local
-  files carry the gateway URL only. See FIXME.md.
+  files carry the gateway URL only. Tracked as TASK-1.
 - `NINEROUTER_URL` and `NINEROUTER_KEY` are both per-host and both set in
   `~/.bash_aliases_local`; nothing in `merged/` hardcodes the gateway name any
   more. `opencode/opencode.jsonc` reads them as `{env:NINEROUTER_URL}` and
@@ -163,12 +166,48 @@ e.g. local `~/.dotfiles-backup-20260912-231104`). `deploy.sh` now does this
 itself before every overwrite (`BACKUP_KEEP=10`), so a normal deploy needs no
 manual backup; only hand edits do.
 
+## Task tracking
+
+Open work is tracked with [Backlog.md](https://github.com/MrLesk/Backlog.md), a
+local-only CLI with no server, account, or telemetry. One Markdown file per task
+lives in `backlog/tasks/`, so the board is readable from any clone without the
+tool installed. `FIXME.md` is a pointer to this board and holds no items itself.
+
+```bash
+backlog board                 # terminal kanban
+backlog task list             # open tasks, grouped by priority
+backlog task view TASK-2      # one task in full
+backlog search "deploy"       # fuzzy search
+backlog config list           # show settings
+```
+
+The npm package is named `backlog.md`; bare `npx backlog` resolves to an
+unrelated third-party package. Install is global (`npm i -g backlog.md`) and
+touches nothing in the repo. `backlog init` is only needed on a fresh clone.
+
+Config is `backlog/config.yml`, set for this repo so that:
+- `remote_operations: false` — no git fetches, works offline
+- `auto_commit: false` — task edits modify files but never commit, so the
+  pre-commit hook and the PR flow still apply
+- `definition_of_done` — new tasks get "tools/validate.sh passes" and
+  "PR opened against master, left unmerged"
+- labels: `deploy`, `validate`, `prompt`, `privacy`, `ci`, `docs`, `tools`,
+  `opencode`, `vscode`
+
+Useful CLI quirk: `-ac` and `-ref` are rejected (they collide with `-a`), use the
+long forms `--acceptance-criteria` and `--ref`.
+
+Conventions: one task per PR, matching the git workflow below. When a task is
+finished, run `backlog task edit <id> --status Done` rather than deleting the
+file, so the record of what was attempted survives in git.
+
 ## Parked work
 
 - Hooks/tooling are in place (`tools/` + `.githooks/`); nothing parked there.
-- Still open: sanitize machine-specific data from tracked files, stop
-  `deploy.sh` clobbering `.bash_aliases_local` on qnap/alpine, add CI, and run
-  the deployment-matrix tests. See FIXME.md for the full list.
+- 32 open tasks live in `backlog/`. The ones that matter most: sanitize
+  machine-specific data from tracked files (TASK-5, TASK-6), stop `deploy.sh`
+  clobbering `.bash_aliases_local` on qnap/alpine (TASK-1), make per-file
+  deploy failures exit non-zero (TASK-2), and add CI (TASK-19).
 
 ## Todo / known deltas
 
@@ -203,5 +242,5 @@ manual backup; only hand edits do.
 - **`NINEROUTER_URL` moved out of `merged/.bashrc` into the host-local layer**
   (2026-10-01). Any debian host that receives the new `.bashrc` without
   adding `export NINEROUTER_URL="http://9router.m9.home.arpa"` to its
-  `~/.bash_aliases_local` first will lose the variable; see FIXME.md,
-  "Deployment order".
+  `~/.bash_aliases_local` first will lose the variable; tracked as TASK-30
+  (blocked on TASK-29, pushing the new `.bashrc` to the fleet).
