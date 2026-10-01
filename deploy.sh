@@ -23,8 +23,16 @@
 #   ./deploy.sh --dry-run       show what would be deployed
 #   ./deploy.sh --local-only    deploy only to the current machine (no SSH)
 #   ./deploy.sh --fail-fast     stop on first unreachable/failing host
+#   ./deploy.sh --no-backup     overwrite without saving the old copies first
 #   DEPLOY_OS=alpine ./deploy.sh --hosts gpd   force an OS manifest (ssh alias)
 #   DEPLOY_OS=openwrt ./deploy.sh --hosts omg  force an OS manifest (ssh alias)
+#
+# Backups:
+#   Before overwriting, existing dotfiles are copied to
+#   ~/.dotfiles-backup-YYYYMMDD-HHMMSS/ on the target host (local or remote),
+#   matching the manual backups in AGENTS.md. Only the newest BACKUP_KEEP (10)
+#   directories are kept. Deployed files are chmod 0644, except
+#   .bash_aliases_local which is 0600 since it can hold per-host secrets.
 
 set -u
 
@@ -37,6 +45,9 @@ FAIL_FAST=0
 LOCAL_ONLY=0
 ONLY_HOSTS=""
 EXIT_CODE=0
+BACKUP=1
+BACKUP_KEEP="${BACKUP_KEEP:-10}"
+STAMP="$(date +%Y%m%d-%H%M%S)"
 
 # --- merged/ files installed on standard bash hosts -------------------------
 MERGED_FILES=(
@@ -58,8 +69,9 @@ while [ $# -gt 0 ]; do
         --dry-run) DRY_RUN=1; shift ;;
         --fail-fast) FAIL_FAST=1; shift ;;
         --local-only) LOCAL_ONLY=1; shift ;;
+        --no-backup) BACKUP=0; shift ;;
         -h|--help)
-            sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '2,33p' "$0" | sed 's/^# \{0,1\}//'
             exit 0 ;;
         *) echo "deploy.sh: unknown option: $1 (see --help)"; exit 2 ;;
     esac
@@ -69,6 +81,73 @@ done
 log()  { printf '%s\n' "$*"; }
 fail() { printf '  \033[31m[FAIL]\033[0m %s\n' "$*"; }
 
+# mode a deployed file should end up with. .bash_aliases_local is the
+# host-local override layer and can carry secrets (e.g. NINEROUTER_KEY), so it
+# stays 0600; everything else is an ordinary readable dotfile.
+deploy_mode() {
+    case "$1" in
+        .bash_aliases_local) printf '0600' ;;
+        *) printf '0644' ;;
+    esac
+}
+
+# keep only the newest BACKUP_KEEP backup dirs, newest first by mtime.
+# portable: no xargs -r and no seq, because qnap/openwrt are busybox/ash.
+prune_backups() {
+    local root="$1" i=0 d
+    while IFS= read -r d; do
+        [ -n "$d" ] || continue
+        i=$((i + 1))
+        [ "$i" -gt "$BACKUP_KEEP" ] && rm -rf "$d"
+    done <<EOF
+$(ls -dt "$root"/.dotfiles-backup-* 2>/dev/null)
+EOF
+}
+
+# copy existing local dotfiles into ~/.dotfiles-backup-$STAMP/ before they are
+# overwritten. Skips files that are not there yet, and removes the dir again if
+# that left it empty (so a first-ever deploy leaves no clutter).
+backup_local() {
+    local b="$LOCAL_DST/.dotfiles-backup-$STAMP" f n=0
+    for f in "${MERGED_FILES[@]}"; do
+        [ -f "$LOCAL_DST/$f" ] || continue
+        mkdir -p "$b"
+        cp -p "$LOCAL_DST/$f" "$b/$f" && n=$((n + 1))
+    done
+    if [ "$n" -eq 0 ]; then
+        rmdir "$b" 2>/dev/null
+    else
+        log "    backup: $n file(s) -> ${b##*/}/"
+    fi
+    # prune unconditionally: old backups must not pile up even on a run that
+    # had nothing to save (e.g. a first-ever deploy).
+    prune_backups "$LOCAL_DST"
+}
+
+# same, on a remote host. $1 = host, rest = destination paths.
+backup_remote() {
+    local host="$1"; shift
+    ssh "${SSH_OPTS[@]}" "$host" '
+        stamp="$1"; keep="$2"; shift 2
+        b="$HOME/.dotfiles-backup-$stamp"
+        n=0
+        for d in "$@"; do
+            d="${d/#\~/$HOME}"
+            [ -f "$d" ] || continue
+            mkdir -p "$b" 2>/dev/null || continue
+            cp -p "$d" "$b/$(basename "$d")" 2>/dev/null && n=$((n + 1))
+        done
+        [ "$n" -eq 0 ] && rmdir "$b" 2>/dev/null
+        # prune oldest, keeping the newest $keep
+        i=0
+        for old in $(ls -dt "$HOME"/.dotfiles-backup-* 2>/dev/null); do
+            i=$((i + 1))
+            [ "$i" -gt "$keep" ] && rm -rf "$old"
+        done
+        exit 0
+    ' _ "$STAMP" "$BACKUP_KEEP" "$@" 2>/dev/null
+}
+
 # push one file: scp when host has it, else stream via ssh (qnap).
 push() {
     local host="$1" src="$2" dst="$3" pipe="$4"
@@ -76,11 +155,17 @@ push() {
         log "    would deploy ${src#./} -> ${host}:${dst}"
         return
     fi
+    if [ "$BACKUP" = 1 ]; then
+        backup_remote "$host" "$dst"
+    fi
     if [ "$pipe" = 1 ]; then
         cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "mkdir -p \$(dirname '$dst'); cat > '$dst'"
     else
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
     fi
+    # scp does not reliably carry the source mode, so set it explicitly.
+    local mode; mode="$(deploy_mode "${dst##*/}")"
+    ssh "${SSH_OPTS[@]}" "$host" "chmod '$mode' '$dst'" 2>/dev/null
 }
 
 # probe a remote host's OS. Returns: debian|ubuntu|alpine|openwrt|qnap|unknown
@@ -145,11 +230,15 @@ deploy_remote() {
 # deploy merged/ to the local machine
 deploy_local() {
     log "local  -> merged/ to $LOCAL_DST"
+    if [ "$BACKUP" = 1 ] && [ "$DRY_RUN" = 0 ]; then
+        backup_local
+    fi
     for f in "${MERGED_FILES[@]}"; do
         if [ "$DRY_RUN" = 1 ]; then
             log "    would deploy merged/$f -> $LOCAL_DST/$f"
         else
             cp "merged/$f" "$LOCAL_DST/$f"
+            chmod "$(deploy_mode "$f")" "$LOCAL_DST/$f"
         fi
     done
 }
