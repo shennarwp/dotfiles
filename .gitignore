@@ -1,5 +1,8 @@
-# local-only overrides (the tracked ones live in merged-qnap/ and merged-alpine/)
-/.bash_aliases_local
+# Local-only overrides. Not anchored with a leading slash, so this matches at
+# any depth: the live copy in $HOME-equivalent repo root, and any hand-placed
+# copy in merged/. Ignore rules only apply to untracked files, so the tracked
+# ones in merged-qnap/ and merged-alpine/ are unaffected.
+.bash_aliases_local
 
 # backups produced by deploy.sh / manual copies
 .dotfiles-backup-*/
