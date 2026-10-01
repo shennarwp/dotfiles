@@ -11,7 +11,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NINEROUTER_URL="${NINEROUTER_URL:-http://10.147.17.5}"
+NINEROUTER_URL="${NINEROUTER_URL:-http://9router.m9.home.arpa}"
 RC="${RC:-$HOME/.bashrc}"
 
 say() { printf '  %s\n' "$*"; }

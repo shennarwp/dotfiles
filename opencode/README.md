@@ -30,7 +30,7 @@ into this repo; the key goes into `~/.bashrc` and opencode's auth store only.
 | A 9router key | Dashboard → Keys. Needed unless the gateway runs with `requireApiKey=false` |
 | `curl` | used for the health check and the skills download |
 | Reachable gateway | `curl $NINEROUTER_URL/api/health` → `{"ok":true}` |
-| ZeroTier up | required — the gateway URL is a ZeroTier IP |
+| LAN name resolvable | not required if you override to the ZeroTier IP instead |
 
 ## 1. Install opencode
 
@@ -47,7 +47,7 @@ Any other install method is fine — only the binary on PATH matters.
 it on every host, so there is nothing to do per machine:
 
 ```bash
-export NINEROUTER_URL="http://10.147.17.5"
+export NINEROUTER_URL="http://9router.m9.home.arpa"
 ```
 
 `NINEROUTER_KEY` is a per-host secret and lives in `~/.bash_aliases_local`
@@ -67,17 +67,19 @@ curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
 # {"ok":true}
 ```
 
-`10.147.17.5` is the gateway's **ZeroTier** address, so it only answers while
-the ZeroTier network is up and this machine is joined. Check with:
+`9router.m9.home.arpa` is the gateway's **mDNS/LAN** name (port 80), so it
+works without ZeroTier as long as you're on the same network. The gateway also
+answers on its ZeroTier address `10.147.17.5`, which works from off-LAN but
+only while ZeroTier is up. To switch, override `NINEROUTER_URL` and the two
+`baseURL`s in `opencode.jsonc`:
 
 ```bash
 zerotier-cli listpeers     # expect the gateway's peer ONLINE
 ping -c1 10.147.17.5
 ```
 
-The gateway also answers on the LAN hostname `9router.m9.home.arpa` (port 80)
-if you prefer a name that resolves without ZeroTier — override
-`NINEROUTER_URL` and the two `baseURL`s in `opencode.jsonc` to switch.
+Note the two hosts may not serve the same model set — the set depends on which
+accounts are configured on whichever gateway answers.
 
 `NINEROUTER_URL` and `NINEROUTER_KEY` are also the names the 9router skills
 expect, so setting them makes every command in those skills work verbatim.
@@ -111,7 +113,11 @@ Two config details worth keeping:
 opencode models | grep -E '^(9router|oc-free)' | head
 ```
 
-Expect 29 `9router/*` and 4 `oc-free/oc/*`.
+Expect `9router/*` for every model the gateway currently serves (the count
+tracks whatever accounts are configured in the dashboard) and 4 `oc-free/oc/*`.
+
+After changing accounts in the dashboard, discovery is cached. Wait out
+`cacheTTL` (5 min) or restart opencode; there is no CLI flush.
 
 ## 5. Capability skills
 
