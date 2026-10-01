@@ -119,6 +119,19 @@ gh pr create --base master --head <branch> --title "..." --body "..."
   overrides; ssh alias `gpd`).
 - local x270: `cp merged/{...} ~/`.
 - rui/fata: dotfiles are symlinks (dotfiles-manager), scp follows them.
+- `deploy.sh` backs up what it is about to overwrite into
+  `~/.dotfiles-backup-YYYYMMDD-HHMMSS/` (local and remote), keeps the newest
+  `BACKUP_KEEP` (default 10) and prunes older ones. `--no-backup` skips it,
+  `--dry-run` does nothing at all. It writes `.bash_aliases_local` as `0600`
+  and everything else as `0644`.
+- **`.bash_aliases_local` is NOT a safe place for secrets on qnap/alpine:**
+  those two manifests deploy the tracked `merged-*/.bash_aliases_local` over
+  the host's copy, so anything added by hand there is lost. Tracked local
+  files carry the gateway URL only. See FIXME.md.
+- `NINEROUTER_URL` and `NINEROUTER_KEY` are both per-host and both set in
+  `~/.bash_aliases_local`; nothing in `merged/` hardcodes the gateway name any
+  more. `opencode/opencode.jsonc` reads them as `{env:NINEROUTER_URL}` and
+  `{env:NINEROUTER_KEY}`.
 
 ## Always run before deploying
 
@@ -137,17 +150,18 @@ Note for hand-rolled checks: `*` does not match a leading dot, so
 
 ## Backups pattern
 
-When editing a host's live dotfiles, make a backup dir like
+When editing a host's live dotfiles by hand, make a backup dir like
 `~/.dotfiles-backup-YYYYMMDD-HHMMSS/` (see host backups,
-e.g. local `~/.dotfiles-backup-20260912-231104`). `deploy.sh` does not do this
-for you yet — see FIXME.md.
+e.g. local `~/.dotfiles-backup-20260912-231104`). `deploy.sh` now does this
+itself before every overwrite (`BACKUP_KEEP=10`), so a normal deploy needs no
+manual backup; only hand edits do.
 
 ## Parked work
 
 - Hooks/tooling are in place (`tools/` + `.githooks/`); nothing parked there.
-- Still open: sanitize machine-specific data from tracked files, make
-  `deploy.sh` back up before overwriting, add CI, and run the deployment-matrix
-  tests. See FIXME.md for the full list.
+- Still open: sanitize machine-specific data from tracked files, stop
+  `deploy.sh` clobbering `.bash_aliases_local` on qnap/alpine, add CI, and run
+  the deployment-matrix tests. See FIXME.md for the full list.
 
 ## Todo / known deltas
 
@@ -179,3 +193,8 @@ for you yet — see FIXME.md.
   `gitleaks detect --pipe` from older docs no longer exists.
 - `shellcheck` is still absent on this machine, so `tools/validate.sh` reports
   that pass as SKIP; `tools/install-tools.sh` installs it via apt.
+- **`NINEROUTER_URL` moved out of `merged/.bashrc` into the host-local layer**
+  (2026-10-01). Any debian host that receives the new `.bashrc` without
+  adding `export NINEROUTER_URL="http://9router.m9.home.arpa"` to its
+  `~/.bash_aliases_local` first will lose the variable; see FIXME.md,
+  "Deployment order".

@@ -43,22 +43,27 @@ Any other install method is fine — only the binary on PATH matters.
 
 ## 2. Environment
 
-`NINEROUTER_URL` ships in the tracked `merged/.bashrc` — `./deploy.sh` installs
-it on every host, so there is nothing to do per machine:
+Both variables are **per-host** and both live in `~/.bash_aliases_local`
+(created by `install.sh`, `chmod 600`), which `merged/.bashrc` sources after
+`~/.bash_aliases`:
 
 ```bash
-export NINEROUTER_URL="http://9router.m9.home.arpa"
+export NINEROUTER_URL="http://9router.m9.home.arpa"   # per-host endpoint
+export NINEROUTER_KEY="sk-..."                        # Dashboard → Keys
 ```
 
-`NINEROUTER_KEY` is a per-host secret and lives in `~/.bash_aliases_local`
-(created by `install.sh`, `chmod 600`). It is deliberately **not** in
-`~/.bashrc`: `deploy.sh` copies `merged/.bashrc` over `~/.bashrc` wholesale, so
-anything appended there by hand is destroyed on the next deploy. That file is
-the host-local override layer and `deploy.sh` never touches it.
+Neither is in the tracked `merged/.bashrc`: a host that cannot reach the
+gateway should not be carrying its name, and anything appended to `~/.bashrc`
+by hand is destroyed on the next deploy (deploy.sh copies `merged/.bashrc`
+over it wholesale). The URL used to ship in `merged/.bashrc`; it moved to the
+host-local layer so hosts off the LAN do not resolve a name that never
+answers. `opencode.jsonc` reads both through `{env:NINEROUTER_URL}` and
+`{env:NINEROUTER_KEY}`.
 
-```bash
-export NINEROUTER_KEY="sk-..."      # Dashboard → Keys
-```
+**Caveat on qnap and alpine:** `deploy.sh` *does* overwrite
+`~/.bash_aliases_local` on those two hosts from the tracked
+`merged-{qnap,alpine}/.bash_aliases_local`, which carries the URL but must
+never carry the key. See FIXME.md.
 
 Verify — open a **new** shell first so the exports are picked up:
 
@@ -70,8 +75,8 @@ curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
 `9router.m9.home.arpa` is the gateway's **mDNS/LAN** name (port 80), so it
 works without ZeroTier as long as you're on the same network. The gateway also
 answers on its ZeroTier address `10.147.17.5`, which works from off-LAN but
-only while ZeroTier is up. To switch, override `NINEROUTER_URL` and the two
-`baseURL`s in `opencode.jsonc`:
+only while ZeroTier is up. To switch, just override `NINEROUTER_URL` in
+`~/.bash_aliases_local` — both `baseURL`s in `opencode.jsonc` follow it:
 
 ```bash
 zerotier-cli listpeers     # expect the gateway's peer ONLINE

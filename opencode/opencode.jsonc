@@ -7,7 +7,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "9Router",
       "options": {
-        "baseURL": "http://9router.m9.home.arpa/v1",
+        "baseURL": "{env:NINEROUTER_URL}/v1",
         "apiKey": "{env:NINEROUTER_KEY}",
         "cacheTTL": 300000
       }
@@ -16,7 +16,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "OpenCode Free",
       "options": {
-        "baseURL": "http://9router.m9.home.arpa/v1",
+        "baseURL": "{env:NINEROUTER_URL}/v1",
         "apiKey": "{env:NINEROUTER_KEY}"
       },
       "models": {
