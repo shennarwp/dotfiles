@@ -6,12 +6,17 @@ is done and no longer tracked here.
 
 ## High priority
 
-- [ ] **`FIXME.md` itself is stale — reconcile it first.** The "make `deploy.sh`
-  back up before overwriting" item was landed in `406b5b7` (`feat(deploy): add
-  pre-overwrite backups`), and the "move `NINEROUTER_URL` to the per-host layer"
-  item is half-done: `0ea84bc` shipped the URL into `merged/.bashrc` and moved
-  only the key, `94946dc` repointed it at a LAN name. Stale entries make the
-  list untrustworthy as a work queue.
+- [ ] **`deploy.sh` overwrites `~/.bash_aliases_local` on qnap and alpine.**
+  `deploy.sh:209` and `deploy.sh:212` push `merged-alpine/.bash_aliases_local`
+  and `merged-qnap/.bash_aliases_local` straight over the host's copy, so any
+  secret a host keeps there — `NINEROUTER_KEY` lives there by design — is
+  destroyed on the next deploy (the tracked copy silently wins; only the
+  `~/.dotfiles-backup-*` dir saves it). `merged/.bashrc`, `deploy_mode` in
+  `deploy.sh` and `opencode/README.md` all claim the layer is "never
+  overwritten", which is true for the debian/ubuntu/openwrt manifests and
+  false for these two. Either append the tracked block to the host file instead
+  of replacing it, move secrets to a separate `~/.bash_aliases_secret`, or stop
+  deploying the local layer at all.
 
 - [ ] **Deploy the pending `merged/` changes to the remote fleet.** The guarded
   Linuxbrew `shellenv`, `PROMPT_COMMAND` append, and `seq`-free `allcolors` are
@@ -77,10 +82,6 @@ is done and no longer tracked here.
   later elements orphaned (verified: `[0]="__makePS1;a" [1]="b"`). Low impact
   today since nothing in the repo sets the array, but the intent is not
   expressed.
-- [ ] **Move `NINEROUTER_URL` to the per-host layer.** It is hardcoded to one
-  internal ZeroTier name in `merged/.bashrc:298` while the key already lives in
-  `~/.bash_aliases_local`. Split the URL the same way so hosts off the ZeroTier
-  network are not carrying a name that never resolves.
 - [ ] **Expand `merged/.vimrc`.** Four lines today: no `set hidden`, no
   clipboard, no `undofile`, no `termguicolors`, and an unconditional `syntax on`
   that is slow on large files. It deploys to every bash host, so this is a
@@ -165,3 +166,9 @@ is done and no longer tracked here.
 
 - [ ] Push the ANSI-only (no `tput`) `.bashrc` to `m9`, `alp`, `rui`, `fata`,
   `zot` — they still run the older tput-gated version.
+- [ ] **Before the new `.bashrc` reaches a host, add the gateway URL to that
+  host's `~/.bash_aliases_local`** (one line, per host):
+  `export NINEROUTER_URL="http://9router.m9.home.arpa"`. The shared `.bashrc`
+  no longer hardcodes it, so a host that skips this loses `NINEROUTER_URL` and
+  `opencode` fails on an empty `baseURL`. qnap and alpine already get it from
+  their tracked local files; the debian hosts need it by hand.

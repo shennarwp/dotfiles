@@ -291,11 +291,12 @@ if [ -x /usr/local/go/bin/go ]; then
     __path_prepend "$GOROOT/bin" "$GOPATH/bin"
 fi
 
-# 9router gateway (see repo/dotfiles/opencode/). Only the URL: the API key is a
-# per-host secret and lives in ~/.bash_aliases_local, which deploy.sh never
-# overwrites. 9router.m9.home.arpa is the gateway's ZeroTier address, so this only
-# resolves while ZeroTier is up.
-export NINEROUTER_URL="http://9router.m9.home.arpa"
+# 9router gateway (see repo/dotfiles/opencode/). Both the URL and the API key
+# are per-host: set them in ~/.bash_aliases_local, which is sourced further
+# down. Nothing is hardcoded here, so a host off the LAN is not carrying an
+# internal name that never resolves. Hosts whose local layer IS tracked
+# (qnap, alpine) carry the URL in their merged-*/.bash_aliases_local.
+export NINEROUTER_URL="${NINEROUTER_URL:-}"   # override in ~/.bash_aliases_local
 
 export PATH
 

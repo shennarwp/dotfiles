@@ -13,6 +13,13 @@ alias mkdir='mkdir -p'
 alias mv='mv -i'
 alias rm='rm -i'
 
+# --- 9router gateway: per-host, like the API key -------------------------
+# The shared merged/.bashrc no longer hardcodes the gateway name. This file
+# IS deployed over ~/.bash_aliases_local, so the value has to live here to
+# survive a deploy (see FIXME.md — deploy.sh overwrites the local layer on
+# qnap/alpine, which is why NINEROUTER_KEY must NOT be added to this file).
+export NINEROUTER_URL="http://9router.m9.home.arpa"
+
 # --- QNAP: no apt, no opkg -> drop the common uu/uug update aliases -------
 unalias uu 2>/dev/null
 unalias uug 2>/dev/null

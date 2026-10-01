@@ -11,8 +11,15 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NINEROUTER_URL="${NINEROUTER_URL:-http://9router.m9.home.arpa}"
+LOCAL_OVERRIDES="${LOCAL_OVERRIDES:-$HOME/.bash_aliases_local}"
 RC="${RC:-$HOME/.bashrc}"
+
+# The gateway URL is per-host and is no longer hardcoded anywhere in the repo,
+# so recover it from the host-local override layer for the health check below.
+if [ -z "${NINEROUTER_URL:-}" ] && [ -f "$LOCAL_OVERRIDES" ]; then
+    NINEROUTER_URL="$(grep -m1 '^[[:space:]]*export NINEROUTER_URL=' "$LOCAL_OVERRIDES" 2>/dev/null \
+        | sed 's/^[^=]*=[[:space:]]*//; s/^["'"'"']//; s/["'"'"']$//')" || true
+fi
 
 say() { printf '  %s\n' "$*"; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
@@ -31,13 +38,15 @@ else
 fi
 
 # ── 2. environment ───────────────────────────────────────────────────────
-# NINEROUTER_URL is NOT written here: it is part of the tracked merged/.bashrc
-# that deploy.sh installs, and appending to ~/.bashrc would be undone by the
-# next deploy (deploy.sh copies merged/.bashrc over it wholesale).
+# NINEROUTER_URL and NINEROUTER_KEY are BOTH per-host and BOTH live in
+# ~/.bash_aliases_local: the URL is no longer in the tracked merged/.bashrc,
+# because hosts off the LAN would carry an internal name that never resolves,
+# and appending to ~/.bashrc is undone by the next deploy (deploy.sh copies
+# merged/.bashrc over it wholesale).
 #
-# NINEROUTER_KEY is a per-host secret, so it goes in ~/.bash_aliases_local —
-# host-local, never tracked, and never overwritten by deploy.sh.
-LOCAL_OVERRIDES="${LOCAL_OVERRIDES:-$HOME/.bash_aliases_local}"
+# NOTE: on qnap and alpine, deploy.sh DOES overwrite ~/.bash_aliases_local
+# from merged-{qnap,alpine}/.bash_aliases_local. That tracked copy carries the
+# URL but must never carry the key; see FIXME.md.
 
 if [ -f "$LOCAL_OVERRIDES" ] && grep -q 'NINEROUTER_KEY' "$LOCAL_OVERRIDES" 2>/dev/null; then
   say "NINEROUTER_KEY already in $LOCAL_OVERRIDES"
@@ -60,8 +69,8 @@ else
   fi
 fi
 
-if ! grep -q 'NINEROUTER_URL' "$RC" 2>/dev/null; then
-  say "NOTE: NINEROUTER_URL not in $RC — run ./deploy.sh (it ships in merged/.bashrc)"
+if ! grep -q 'NINEROUTER_URL' "$LOCAL_OVERRIDES" 2>/dev/null; then
+  say "NOTE: NINEROUTER_URL not in $LOCAL_OVERRIDES — add it there (see README section 2)"
 fi
 
 # ── 3. config ─────────────────────────────────────────────────────────
@@ -77,14 +86,16 @@ else
 fi
 
 # ── 4. gateway reachable? ─────────────────────────────────────────────
-if command -v curl >/dev/null 2>&1; then
+if [ -z "$NINEROUTER_URL" ]; then
+  say "NINEROUTER_URL unknown — skipped gateway check (set it in $LOCAL_OVERRIDES)"
+elif ! command -v curl >/dev/null 2>&1; then
+  say "curl not found, skipped gateway check"
+else
   if curl -sf -m 10 "$NINEROUTER_URL/api/health" >/dev/null 2>&1; then
     say "gateway healthy: $NINEROUTER_URL"
   else
     say "WARNING: $NINEROUTER_URL/api/health did not answer — check the URL/VPN"
   fi
-else
-  say "curl not found, skipped gateway check"
 fi
 
 # ── 5. 9router skills (optional, only if the repo is reachable) ───────
