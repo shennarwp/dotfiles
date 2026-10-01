@@ -30,33 +30,38 @@ else
   die "need opencode installed — see https://opencode.ai/docs/ (or install npm first)"
 fi
 
-# ── 2. environment (key is asked for, never stored in this repo) ──────
-if ! grep -q 'NINEROUTER_URL' "$RC" 2>/dev/null; then
-  cat >>"$RC" <<EOF
+# ── 2. environment ───────────────────────────────────────────────────────
+# NINEROUTER_URL is NOT written here: it is part of the tracked merged/.bashrc
+# that deploy.sh installs, and appending to ~/.bashrc would be undone by the
+# next deploy (deploy.sh copies merged/.bashrc over it wholesale).
+#
+# NINEROUTER_KEY is a per-host secret, so it goes in ~/.bash_aliases_local —
+# host-local, never tracked, and never overwritten by deploy.sh.
+LOCAL_OVERRIDES="${LOCAL_OVERRIDES:-$HOME/.bash_aliases_local}"
 
-# 9router gateway
-export NINEROUTER_URL="$NINEROUTER_URL"
-EOF
-  say "added NINEROUTER_URL to $RC"
+if [ -f "$LOCAL_OVERRIDES" ] && grep -q 'NINEROUTER_KEY' "$LOCAL_OVERRIDES" 2>/dev/null; then
+  say "NINEROUTER_KEY already in $LOCAL_OVERRIDES"
 else
-  say "NINEROUTER_URL already in $RC"
-fi
-
-if ! grep -q 'NINEROUTER_KEY' "$RC" 2>/dev/null; then
   if [ -t 0 ]; then
     printf 'Paste 9router API key (Dashboard -> Keys, blank to skip): '
     read -r KEY
     if [ -n "$KEY" ]; then
-      printf '\n# 9router API key\nexport NINEROUTER_KEY="%s"\n' "$KEY" >>"$RC"
-      say "added NINEROUTER_KEY to $RC"
+      {
+        printf '\n# 9router API key — secret, per-host.\n'
+        printf 'export NINEROUTER_KEY="%s"\n' "$KEY"
+      } >>"$LOCAL_OVERRIDES"
+      chmod 600 "$LOCAL_OVERRIDES"
+      say "added NINEROUTER_KEY to $LOCAL_OVERRIDES"
     else
-      say "skipped key — add it manually before starting opencode"
+      say "skipped key — set NINEROUTER_KEY in $LOCAL_OVERRIDES before starting opencode"
     fi
   else
-    say "non-interactive: add NINEROUTER_KEY to $RC yourself"
+    say "non-interactive: set NINEROUTER_KEY in $LOCAL_OVERRIDES yourself"
   fi
-else
-  say "NINEROUTER_KEY already in $RC"
+fi
+
+if ! grep -q 'NINEROUTER_URL' "$RC" 2>/dev/null; then
+  say "NOTE: NINEROUTER_URL not in $RC — run ./deploy.sh (it ships in merged/.bashrc)"
 fi
 
 # ── 3. config ─────────────────────────────────────────────────────────

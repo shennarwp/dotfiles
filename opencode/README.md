@@ -43,11 +43,28 @@ Any other install method is fine — only the binary on PATH matters.
 
 ## 2. Environment
 
-Two variables, both in `~/.bashrc`:
+`NINEROUTER_URL` ships in the tracked `merged/.bashrc` — `./deploy.sh` installs
+it on every host, so there is nothing to do per machine:
 
 ```bash
 export NINEROUTER_URL="http://10.147.17.5"
+```
+
+`NINEROUTER_KEY` is a per-host secret and lives in `~/.bash_aliases_local`
+(created by `install.sh`, `chmod 600`). It is deliberately **not** in
+`~/.bashrc`: `deploy.sh` copies `merged/.bashrc` over `~/.bashrc` wholesale, so
+anything appended there by hand is destroyed on the next deploy. That file is
+the host-local override layer and `deploy.sh` never touches it.
+
+```bash
 export NINEROUTER_KEY="sk-..."      # Dashboard → Keys
+```
+
+Verify — open a **new** shell first so the exports are picked up:
+
+```bash
+curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
+# {"ok":true}
 ```
 
 `10.147.17.5` is the gateway's **ZeroTier** address, so it only answers while
@@ -61,13 +78,6 @@ ping -c1 10.147.17.5
 The gateway also answers on the LAN hostname `9router.m9.home.arpa` (port 80)
 if you prefer a name that resolves without ZeroTier — override
 `NINEROUTER_URL` and the two `baseURL`s in `opencode.jsonc` to switch.
-
-Verify:
-
-```bash
-curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
-# {"ok":true}
-```
 
 `NINEROUTER_URL` and `NINEROUTER_KEY` are also the names the 9router skills
 expect, so setting them makes every command in those skills work verbatim.
@@ -194,13 +204,16 @@ filter box matches nothing, because the model labels are `Big Pickle`,
 
 ## Security
 
-- The API key lives in `~/.bashrc` and `~/.local/share/opencode/auth.json`.
-  Both are outside this repo. Keep it that way — `tools/validate.sh` runs
-  gitleaks and the repo is public.
-- `.bashrc` exports are plain text; `chmod 600` on the auth store if the machine
-  is shared.
+- The API key lives in `~/.bash_aliases_local` (`chmod 600`) and
+  `~/.local/share/opencode/auth.json`. Both are outside this repo and outside
+  `deploy.sh`'s reach. Keep it that way — `tools/validate.sh` runs gitleaks and
+  the repo is public.
+- Only the non-secret `NINEROUTER_URL` is tracked, in `merged/.bashrc`.
+- **Never** put the key in `~/.bashrc`: `deploy.sh` overwrites that file
+  wholesale with `merged/.bashrc`, so the key would be lost on the next deploy
+  (and `deploy.sh` does not back up first — see FIXME.md).
 - If the gateway key ever leaks, rotate it in the 9router dashboard and update
-  both places.
+  both places above.
 
 ## Files
 
