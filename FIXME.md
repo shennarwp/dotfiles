@@ -159,7 +159,14 @@ is done and no longer tracked here.
 - [ ] **Make `core.hooksPath` the documented default.** `tools/install-hooks.sh`
   supports `--hooks-path`, but it is not set in this clone, so a fresh clone
   depends on the copy step running by hand.
-- [ ] Confirm generated output (coverage, `*.tsbuildinfo`) is ignored in the
+- [ ] **`tools/validate.sh`: no check for `.ts` extensions.** `pidev/extension/9router.ts`
+  is executable TypeScript loaded by pi through `jiti`, and nothing in the repo
+  parses it. The syntax pass only covers shell files and the JSON pass only
+  covers JSON, so a typo in the extension reaches a session instead of CI. At
+  minimum `bash -n`-equivalent coverage is impossible; a `jiti` import smoke
+  test (load the factory, assert it calls `registerProvider`) would catch the
+  common cases without a TypeScript dependency.
+- [ ] **Confirm generated output (coverage, `*.tsbuildinfo`) is ignored in the
   sibling repositories too — this repo's `.gitignore` covers only this tree.
 
 ## Deployment order

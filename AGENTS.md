@@ -21,6 +21,13 @@ Guidance for another agent continuing dotfiles work. Read this before editing; t
   (gitleaks/shellcheck).
 - `.githooks/pre-commit` — tracked hook source; run `tools/install-hooks.sh` after
   a fresh clone (`.git/hooks/` is not tracked).
+- `opencode/` — opencode client + 9router gateway setup (`install.sh`,
+  `opencode.jsonc`, README).
+- `pidev/` — pi (pi.dev) + the same 9router gateway: idempotent `install.sh`,
+  a `models.json` fallback, and `extension/9router.ts`, which discovers models
+  live from `$NINEROUTER_URL/v1/models`. Both client folders read
+  `NINEROUTER_URL`/`NINEROUTER_KEY` from the host-local layer; neither
+  hardcodes the gateway.
 
 Rules of thumb:
 - Never edit per-host copies directly if the change belongs in `merged/`.
