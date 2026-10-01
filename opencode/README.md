@@ -30,6 +30,7 @@ into this repo; the key goes into `~/.bashrc` and opencode's auth store only.
 | A 9router key | Dashboard → Keys. Needed unless the gateway runs with `requireApiKey=false` |
 | `curl` | used for the health check and the skills download |
 | Reachable gateway | `curl $NINEROUTER_URL/api/health` → `{"ok":true}` |
+| ZeroTier up | required — the gateway URL is a ZeroTier IP |
 
 ## 1. Install opencode
 
@@ -45,9 +46,21 @@ Any other install method is fine — only the binary on PATH matters.
 Two variables, both in `~/.bashrc`:
 
 ```bash
-export NINEROUTER_URL="http://9router.m9.home.arpa"
+export NINEROUTER_URL="http://10.147.17.5"
 export NINEROUTER_KEY="sk-..."      # Dashboard → Keys
 ```
+
+`10.147.17.5` is the gateway's **ZeroTier** address, so it only answers while
+the ZeroTier network is up and this machine is joined. Check with:
+
+```bash
+zerotier-cli listpeers     # expect the gateway's peer ONLINE
+ping -c1 10.147.17.5
+```
+
+The gateway also answers on the LAN hostname `9router.m9.home.arpa` (port 80)
+if you prefer a name that resolves without ZeroTier — override
+`NINEROUTER_URL` and the two `baseURL`s in `opencode.jsonc` to switch.
 
 Verify:
 
