@@ -293,9 +293,9 @@ fi
 
 # 9router gateway (see repo/dotfiles/opencode/). Only the URL: the API key is a
 # per-host secret and lives in ~/.bash_aliases_local, which deploy.sh never
-# overwrites. 10.147.17.5 is the gateway's ZeroTier address, so this only
+# overwrites. 9router.m9.home.arpa is the gateway's ZeroTier address, so this only
 # resolves while ZeroTier is up.
-export NINEROUTER_URL="http://10.147.17.5"
+export NINEROUTER_URL="http://9router.m9.home.arpa"
 
 export PATH
 

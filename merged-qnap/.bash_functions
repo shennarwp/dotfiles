@@ -81,3 +81,11 @@ function spd() {
          "$(awk -v n="$v" 'BEGIN{printf "%.2f", n/1000000}') MB/s"
     date
 }
+
+# Drop pi's cached 9router model list, then relist. The @haoyiyin/9router
+# extension caches it for 30 minutes, so models you just added or removed in
+# the 9router dashboard stay invisible until the TTL expires.
+function pirm() {
+    rm -fv "${PI_CACHE_DIR:-$HOME/.cache/pi}/9router.json"
+    pi --list-models
+}
