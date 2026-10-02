@@ -1,7 +1,7 @@
 ---
 id: TASK-27
 title: Document the .bash_profile / .profile / .bashrc sourcing order
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,7 +21,7 @@ ordinal: 27000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 AGENTS.md states the sourcing chain and which hosts deploy which of the three files
+- [x] #1 AGENTS.md states the sourcing chain and which hosts deploy which of the three files
 <!-- AC:END -->
 
 ## Definition of Done
