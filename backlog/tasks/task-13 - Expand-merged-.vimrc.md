@@ -1,7 +1,7 @@
 ---
 id: TASK-13
 title: Expand merged/.vimrc
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,12 +21,12 @@ Four lines today: no `set hidden`, no clipboard, no `undofile`, no `termguicolor
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 `tools/validate.sh` vimrc source check still passes
-- [ ] #2 The choice of each added option is commented with the reason
+- [x] #1 `tools/validate.sh` vimrc source check still passes
+- [x] #2 The choice of each added option is commented with the reason
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
+- [x] #1 tools/validate.sh passes
 - [ ] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
