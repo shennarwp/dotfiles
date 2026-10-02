@@ -246,7 +246,7 @@ deploy_remote() {
             for f in "${MERGED_FILES[@]}"; do
                 push "$host" "merged/$f" "~/$f" 0 || fail "$host: $f"
             done
-            push "$host" "$ALPINE_LOCAL_FILE" "~/.bash_aliases_local" 0 || fail "$host: local"
+            push_append "$host" "$ALPINE_LOCAL_FILE" "~/.bash_aliases_local" 0 || fail "$host: local"
             ;;
         qnap)
             log "  $host [qnap] -> merged-qnap/ + common aliases (streamed)"
@@ -255,7 +255,7 @@ deploy_remote() {
             push "$host" "merged-qnap/.bash_logout"    "~/.bash_logout"    "$pipe" || fail "$host: .bash_logout"
             push "$host" "merged-qnap/.bash_functions" "~/.bash_functions" "$pipe" || fail "$host: .bash_functions"
             push "$host" "merged/.bash_aliases"        "~/.bash_aliases"   "$pipe" || fail "$host: .bash_aliases"
-            push "$host" "merged-qnap/.bash_aliases_local" "~/.bash_aliases_local" "$pipe" || fail "$host: .bash_aliases_local"
+            push_append "$host" "merged-qnap/.bash_aliases_local" "~/.bash_aliases_local" "$pipe" || fail "$host: .bash_aliases_local"
             ;;
         openwrt)
             log "  $host [openwrt] -> merged-openwrt/"

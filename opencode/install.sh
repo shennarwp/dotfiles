@@ -44,9 +44,9 @@ fi
 # and appending to ~/.bashrc is undone by the next deploy (deploy.sh copies
 # merged/.bashrc over it wholesale).
 #
-# NOTE: on qnap and alpine, deploy.sh DOES overwrite ~/.bash_aliases_local
-# from merged-{qnap,alpine}/.bash_aliases_local. That tracked copy carries the
-# URL but must never carry the key; see FIXME.md.
+# NOTE: on qnap and alpine, deploy.sh \`push_append\` merges the tracked copy
+# into ~/.bash_aliases_local, preserving any host-specific content. The header
+# and deploy_mode comment below now reflect this append-vs-overwrite behaviour.
 
 if [ -f "$LOCAL_OVERRIDES" ] && grep -q 'NINEROUTER_KEY' "$LOCAL_OVERRIDES" 2>/dev/null; then
   say "NINEROUTER_KEY already in $LOCAL_OVERRIDES"
