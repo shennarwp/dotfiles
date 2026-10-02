@@ -1,7 +1,7 @@
 ---
 id: TASK-17
 title: 'tools/validate.sh: syntax-check terminator/config and the sublime keymaps'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -22,8 +22,8 @@ ordinal: 17000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 terminator/config is parsed by a TOML check or documented as intentionally unvalidated
-- [ ] #2 *.sublime-keymap is validated as JSON
+- [x] #1 terminator/config is parsed by a TOML check or documented as intentionally unvalidated
+- [x] #2 *.sublime-keymap is validated as JSON
 <!-- AC:END -->
 
 ## Definition of Done
