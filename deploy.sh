@@ -163,10 +163,11 @@ push() {
     if [ "$pipe" = 1 ]; then
         cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "mkdir -p \$(dirname '$dst'); cat > '$dst'"
     else
+        ssh "${SSH_OPTS[@]}" "$host" "mkdir -p \$(dirname '$dst')" 2>/dev/null || :
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
     fi
     local mode; mode="$(deploy_mode "${dst##*/}")"
-    ssh "${SSH_OPTS[@]}" "$host" "chmod '$mode' '$dst'" 2>/dev/null
+    ssh "${SSH_OPTS[@]}" "$host" "chmod '$mode' \"\$HOME/${dst#\~/}\"" 2>/dev/null
 }
 
 push_append() {
