@@ -1,7 +1,7 @@
 ---
 id: TASK-4
 title: 'deploy.sh: no post-push verification'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -22,7 +22,7 @@ Even once `fail` sets `EXIT_CODE`, a truncated write still looks like success on
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A size mismatch on the remote side is reported and sets a non-zero exit
+- [x] #1 A size mismatch on the remote side is reported and sets a non-zero exit
 <!-- AC:END -->
 
 ## Definition of Done
