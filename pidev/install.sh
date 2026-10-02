@@ -58,9 +58,9 @@ command -v pi >/dev/null 2>&1 || die "pi not found — install it first (see htt
 # NINEROUTER_URL and NINEROUTER_KEY are BOTH per-host and BOTH live in
 # ~/.bash_aliases_local (see ../opencode/README.md section 2 — same gateway).
 #
-# NOTE: on qnap and alpine, deploy.sh DOES overwrite ~/.bash_aliases_local from
-# merged-{qnap,alpine}/.bash_aliases_local. That tracked copy carries the URL
-# but must never carry the key; see FIXME.md.
+# NOTE: on qnap and alpine, deploy.sh \`push_append\` merges the tracked copy
+# into ~/.bash_aliases_local, preserving any host-specific content. The header
+# and deploy_mode comment below now reflect this append-vs-overwrite behaviour.
 
 if [ -z "$NINEROUTER_URL" ]; then
   say "NINEROUTER_URL not set — add it to $LOCAL_OVERRIDES:"
