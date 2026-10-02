@@ -9,8 +9,11 @@
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoredups:ignorespace
 
-# append to the history file, don't overwrite it.
+# history append and multiline command support
 shopt -s histappend
+shopt -s cmdhist          # combine multiline commands into one history entry
+shopt -s lithist          # preserve embedded newlines in multiline commands
+HISTTIMEFORMAT='%F %T '
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000

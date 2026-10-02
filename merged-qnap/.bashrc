@@ -6,6 +6,12 @@
 # If not running interactively, don't do anything.
 [ -z "$PS1" ] && return
 
+# History defaults (deliberately simple for bash 3.2 on embedded NAS)
+HISTCONTROL=ignoredups:ignorespace
+shopt -s histappend 2>/dev/null || true
+HISTSIZE=1000
+HISTFILESIZE=2000
+
 # QNAP PATH: keep as shipped by the platform.
 export PATH=\
 /bin:\
