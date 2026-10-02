@@ -71,7 +71,7 @@ is_shell_file() {
 
 json_file() {
     case "$1" in
-        *.json|*.sublime-settings) return 0 ;;
+        *.json|*.jsonc|*.sublime-settings) return 0 ;;
         *) return 1 ;;
     esac
 }
