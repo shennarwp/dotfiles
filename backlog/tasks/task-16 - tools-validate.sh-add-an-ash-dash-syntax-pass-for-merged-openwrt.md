@@ -1,7 +1,7 @@
 ---
 id: TASK-16
 title: 'tools/validate.sh: add an ash/dash syntax pass for merged-openwrt/'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -22,8 +22,8 @@ ordinal: 16000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A bash-only construct in merged-openwrt/.bash_aliases or .profile fails validate.sh
-- [ ] #2 The pass reports SKIP, not failure, when neither ash nor dash is installed
+- [x] #1 A bash-only construct in merged-openwrt/.bash_aliases or .profile fails validate.sh
+- [x] #2 The pass reports SKIP, not failure, when neither ash nor dash is installed
 <!-- AC:END -->
 
 ## Definition of Done
