@@ -1,7 +1,7 @@
 ---
 id: TASK-14
 title: Improve history defaults
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,7 +21,7 @@ ordinal: 14000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 History options are set in merged/.bashrc and mirrored or deliberately omitted in merged-qnap/.bashrc
+- [x] #1 History options are set in merged/.bashrc and mirrored or deliberately omitted in merged-qnap/.bashrc
 <!-- AC:END -->
 
 ## Definition of Done
