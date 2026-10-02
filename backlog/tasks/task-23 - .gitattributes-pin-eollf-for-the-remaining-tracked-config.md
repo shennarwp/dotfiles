@@ -1,7 +1,7 @@
 ---
 id: TASK-23
 title: '.gitattributes: pin eol=lf for the remaining tracked config'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,7 +21,7 @@ ordinal: 23000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Every tracked text config file has an explicit eol=lf entry
+- [x] #1 Every tracked text config file has an explicit eol=lf entry
 <!-- AC:END -->
 
 ## Definition of Done
