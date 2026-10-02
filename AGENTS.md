@@ -127,6 +127,23 @@ gh pr create --base master --head <branch> --title "..." --body "..."
   only (ssh alias `omg`).
 - alpine: `merged/` files plus `merged-alpine/.bash_aliases_local` (apk
   overrides; ssh alias `gpd`).
+
+## Shell file sourcing order
+
+The sourcing chain for interactive bash shells:
+
+```
+.bash_profile  →  .profile  →  .bashrc  →  .bash_aliases/.bash_functions
+```
+
+- `.bash_profile` is only deployed on standard bash hosts (not QNAP/openwrt/alpine),
+  since QNAP uses a separate `.bash_profile` variant that is not part of this
+  manifest. On hosts where `.bash_profile` is not deployed, `.profile` provides
+  the login-shell entry point and `.bashrc` provides the interactive shell
+  configuration.
+- `~/.bash_aliases_local` (0600) is sourced last by `.bashrc` and overrides
+  host-specific settings (e.g. NINEROUTER_URL). This file must not be tracked
+  in `merged/` — keep it in `~/.bash_aliases_local` only.
 - local x270: `cp merged/{...} ~/`.
 - rui/fata: dotfiles are symlinks (dotfiles-manager), scp follows them.
 - `deploy.sh` backs up what it is about to overwrite into
