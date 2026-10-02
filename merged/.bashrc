@@ -233,10 +233,27 @@ if [ ! -n "${HOST_COLOR}" ]; then
 
 if [ "$color_prompt" = yes ]; then
     # append (never clobber): keep hooks set by bash_completion, virtualenv, direnv...
-    case ";${PROMPT_COMMAND};" in
-        *";__makePS1;"*) ;;
-        *) PROMPT_COMMAND="__makePS1${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
-    esac
+    # bash 5.1+ supports PROMPT_COMMAND as an array
+    if [ "${BASH_VERSINFO[0]:-0}" -gt 5 ] || { [ "${BASH_VERSINFO[0]:-0}" -eq 5 ] && [ "${BASH_VERSINFO[1]:-0}" -ge 1 ]; }; then
+        if declare -p PROMPT_COMMAND 2>/dev/null | grep -q 'declare -a'; then
+            local _pc_found=0
+            for _pc in "${PROMPT_COMMAND[@]}"; do
+                [ "$_pc" = "__makePS1" ] && _pc_found=1 && break
+            done
+            [ "$_pc_found" -eq 0 ] && PROMPT_COMMAND+=("__makePS1")
+            unset _pc _pc_found
+        else
+            case ";${PROMPT_COMMAND};" in
+                *";__makePS1;"*) ;;
+                *) PROMPT_COMMAND="__makePS1${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+            esac
+        fi
+    else
+        case ";${PROMPT_COMMAND};" in
+            *";__makePS1;"*) ;;
+            *) PROMPT_COMMAND="__makePS1${PROMPT_COMMAND:+;$PROMPT_COMMAND}" ;;
+        esac
+    fi
     PS2="\[${BPurple}\]>\[${Color_Off}\] " # continuation prompt
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ \n'
