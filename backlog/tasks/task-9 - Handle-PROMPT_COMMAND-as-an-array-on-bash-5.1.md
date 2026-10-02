@@ -1,7 +1,7 @@
 ---
 id: TASK-9
 title: Handle PROMPT_COMMAND as an array on bash >= 5.1
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,8 +21,8 @@ The append guard in `merged/.bashrc` assumes the scalar form. With an array, `"$
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Setting PROMPT_COMMAND to an array still appends __makePS1 without dropping elements
-- [ ] #2 The scalar form still works
+- [x] #1 Setting PROMPT_COMMAND to an array still appends __makePS1 without dropping elements
+- [x] #2 The scalar form still works
 <!-- AC:END -->
 
 ## Definition of Done
