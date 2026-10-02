@@ -1,7 +1,7 @@
 ---
 id: TASK-1
 title: deploy.sh overwrites the host-local override layer on qnap and alpine
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
