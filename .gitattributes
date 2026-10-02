@@ -16,10 +16,17 @@ deploy.sh text eol=lf
 # editors / terminals / markdown
 *.md text eol=lf
 *.json text eol=lf
+*.jsonc text eol=lf
 *.theme text eol=lf
 *.sublime-settings text eol=lf
 *.sublime-keymap text eol=lf
 *.toml text eol=lf
+
+# named config files with no extension
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitleaks.toml text eol=lf
+terminator/config text eol=lf
 
 # binary export: never diff, never EOL-translate
 *.rayconfig binary
