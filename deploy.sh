@@ -167,6 +167,18 @@ push() {
     fi
     local mode; mode="$(deploy_mode "${dst##*/}")"
     ssh "${SSH_OPTS[@]}" "$host" "chmod '$mode' \"\$HOME/${dst#\~/}\"" 2>/dev/null
+    verify_push "$host" "$src" "$dst"
+}
+
+# verify remote file size matches local; report and set EXIT_CODE on mismatch.
+verify_push() {
+    local host="$1" src="$2" dst="$3"
+    local local_size remote_size
+    local_size=$(wc -c < "$src")
+    remote_size=$(ssh "${SSH_OPTS[@]}" "$host" "wc -c < \"\$HOME/${dst#\~/}\"" 2>/dev/null)
+    if [ "$local_size" != "$remote_size" ]; then
+        fail "$host: $dst size mismatch (local=$local_size remote=${remote_size:-missing})"
+    fi
 }
 
 push_append() {
