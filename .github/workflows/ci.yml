@@ -1,0 +1,26 @@
+name: Dotfiles CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          bash tools/install-tools.sh
+
+      - name: Run validation
+        run: bash tools/validate.sh
+
+      - name: Run deployment matrix tests
+        run: bash tests/deploy_matrix_test.sh
