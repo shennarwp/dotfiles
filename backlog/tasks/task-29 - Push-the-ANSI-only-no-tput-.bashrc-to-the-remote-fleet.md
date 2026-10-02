@@ -1,7 +1,7 @@
 ---
 id: TASK-29
 title: Push the ANSI-only (no tput) .bashrc to the remote fleet
-status: Done (user action required)
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
