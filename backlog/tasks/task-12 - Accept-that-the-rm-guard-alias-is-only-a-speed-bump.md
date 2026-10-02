@@ -1,7 +1,7 @@
 ---
 id: TASK-12
 title: Accept that the rm guard alias is only a speed bump
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,7 +21,7 @@ ordinal: 12000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A comment above the alias states whether it is a hard guard or advisory
+- [x] #1 A comment above the alias states whether it is a hard guard or advisory
 <!-- AC:END -->
 
 ## Definition of Done
