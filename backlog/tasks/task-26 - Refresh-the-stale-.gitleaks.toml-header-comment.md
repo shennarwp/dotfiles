@@ -1,7 +1,7 @@
 ---
 id: TASK-26
 title: Refresh the stale .gitleaks.toml header comment
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -22,7 +22,7 @@ It still references `gitleaks detect --pipe`, the subcommand removed in gitleaks
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The comment names the v8.19+ `gitleaks git` CLI that validate.sh actually calls
+- [x] #1 The comment names the v8.19+ `gitleaks git` CLI that validate.sh actually calls
 <!-- AC:END -->
 
 ## Definition of Done
