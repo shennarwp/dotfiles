@@ -1,7 +1,7 @@
 ---
 id: TASK-15
 title: 'tools/validate.sh: add a *.jsonc pass'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
