@@ -163,9 +163,49 @@ push() {
     else
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
     fi
-    # scp does not reliably carry the source mode, so set it explicitly.
     local mode; mode="$(deploy_mode "${dst##*/}")"
     ssh "${SSH_OPTS[@]}" "$host" "chmod '$mode' '$dst'" 2>/dev/null
+}
+
+push_append() {
+    local host="$1" src="$2" dst="$3" pipe="$4"
+    if [ "$DRY_RUN" = 1 ]; then
+        log "    would merge ${src#./} -> ${host}:${dst} (preserving host-local)"
+        return 0
+    fi
+    [ "$BACKUP" = 1 ] && backup_remote "$host" "$dst"
+    
+    local mode; mode="$(deploy_mode "${dst##*/}")"
+    
+    if [ "$pipe" = 1 ]; then
+        ssh "${SSH_OPTS[@]}" "$host" '
+            dst="'"$dst"'"
+            tmp="$dst.tmp.$$"
+            cat > "$tmp"
+            if [ -f "$dst" ]; then
+                sed -e "/^# >>> deploy.sh managed/,/^# <<< deploy.sh managed/d" "$dst" > "$dst.head"
+            else
+                : > "$dst.head"
+            fi
+            { cat "$dst.head"; printf "\n# >>> deploy.sh managed\n"; cat "$tmp"; printf "# <<< deploy.sh managed\n"; } > "$dst"
+            rm -f "$tmp" "$dst.head"
+            chmod '"$mode"' "$dst"
+        '
+    else
+        scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}.tmp"
+        ssh "${SSH_OPTS[@]}" "$host" '
+            src="'"${dst}.tmp"'"
+            dst="'"$dst"'"
+            if [ -f "$dst" ]; then
+                sed -e "/^# >>> deploy.sh managed/,/^# <<< deploy.sh managed/d" "$dst" > "$dst.head"
+            else
+                : > "$dst.head"
+            fi
+            { cat "$dst.head"; printf "\n# >>> deploy.sh managed\n"; cat "$src"; printf "# <<< deploy.sh managed\n"; } > "$dst"
+            rm -f "$src" "$dst.head"
+            chmod '"$mode"' "$dst"
+        '
+    fi
 }
 
 # probe a remote host's OS. Returns: debian|ubuntu|alpine|openwrt|qnap|unknown
