@@ -1,7 +1,7 @@
 ---
 id: TASK-11
 title: Batch the SSH round-trips in deploy.sh
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
