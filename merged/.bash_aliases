@@ -26,6 +26,8 @@ alias vi='vim'
 alias v='vi'
 
 # safer file operations
+# note: rm -I is advisory only; -f overrides -I, so "rm -rf" still deletes without prompt.
+# aliases are not expanded inside functions, so pirm's own "rm -fv" is unaffected.
 alias mkdir='mkdir -p -v'
 alias md='mkdir'
 alias mv='mv -iv'
