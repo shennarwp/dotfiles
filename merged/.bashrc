@@ -121,7 +121,7 @@ case "${TERM:-dumb}" in
     *)       color_prompt=yes ;;
 esac
 
-FQDN=$(hostname -f)
+FQDN=$(hostname -f 2>/dev/null) || FQDN=$(hostname)
 
 function __makeTerminalTitle() {
     local title=''
@@ -129,9 +129,9 @@ function __makeTerminalTitle() {
     local CURRENT_DIR="${PWD/#$HOME/\~}"
 
     if [ -n "${SSH_CONNECTION}" ]; then
-        title+="$(hostname):${CURRENT_DIR} [$(whoami)@${FQDN}]"
+        title+="$(hostname):${CURRENT_DIR} [${USER}@${FQDN}]"
     else
-        title+="${CURRENT_DIR} [$(whoami)]"
+        title+="${CURRENT_DIR} [${USER}]"
     fi
 
     echo -en '\033]2;'${title}'\007'
@@ -187,7 +187,7 @@ if [ ! -n "${HOST_COLOR}" ]; then
     fi
 
     # screen sessions
-    local SCREEN_PATHS="/var/run/screens/S-$(whoami) /var/run/screen/S-$(whoami) /var/run/uscreens/S-$(whoami)"
+    local SCREEN_PATHS="/var/run/screens/S-${USER} /var/run/screen/S-${USER} /var/run/uscreens/S-${USER}"
 
     for screen_path in ${SCREEN_PATHS}; do
         if [ -d "${screen_path}" ]; then

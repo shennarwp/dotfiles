@@ -58,7 +58,7 @@ else
     color_prompt=
 fi
 
-FQDN=$(hostname -f)
+FQDN=$(hostname -f 2>/dev/null) || FQDN=$(hostname)
 
 function __makeTerminalTitle() {
     local title=''

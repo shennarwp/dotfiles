@@ -1,7 +1,7 @@
 ---
 id: TASK-7
 title: Guard optional utilities in the startup files
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
