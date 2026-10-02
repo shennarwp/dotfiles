@@ -1,7 +1,7 @@
 ---
 id: TASK-10
 title: Stop using hardcoded line ranges for --help in the tooling
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:

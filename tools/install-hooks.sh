@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HELP-BEGIN
 #
 # tools/install-hooks.sh — wire the tracked hooks in .githooks/ into this clone.
 #
@@ -13,6 +14,7 @@
 # Installed hooks are marked with a "managed-by: tools/install-hooks.sh" line;
 # --uninstall only deletes copies carrying that marker, so a hand-written hook
 # is backed up (hooks/TIMESTAMP.bak) instead of being clobbered.
+# HELP-END
 
 set -u
 
@@ -32,7 +34,9 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --hooks-path) MODE=hooks-path; shift ;;
         --uninstall)  MODE=uninstall; shift ;;
-        -h|--help)    sed -n '3,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)    
+            awk '/^# HELP-BEGIN$/{flag=1;next} /^# HELP-END$/{flag=0} flag {sub(/^# ?/, ""); print}' "$0"
+            exit 0 ;;
         *) echo "install-hooks.sh: unknown option: $1 (see --help)" >&2; exit 2 ;;
     esac
 done

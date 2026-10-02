@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HELP-BEGIN
 #
 # deploy.sh — deploy dotfiles to all hosts.
 #
@@ -33,6 +34,7 @@
 #   matching the manual backups in AGENTS.md. Only the newest BACKUP_KEEP (10)
 #   directories are kept. Deployed files are chmod 0644, except
 #   .bash_aliases_local which is 0600 since it can hold per-host secrets.
+# HELP-END
 
 set -u
 
@@ -71,7 +73,7 @@ while [ $# -gt 0 ]; do
         --local-only) LOCAL_ONLY=1; shift ;;
         --no-backup) BACKUP=0; shift ;;
         -h|--help)
-            sed -n '2,33p' "$0" | sed 's/^# \{0,1\}//'
+            awk '/^# HELP-BEGIN$/{flag=1;next} /^# HELP-END$/{flag=0} flag {sub(/^# ?/, ""); print}' "$0"
             exit 0 ;;
         *) echo "deploy.sh: unknown option: $1 (see --help)"; exit 2 ;;
     esac
