@@ -1,5 +1,5 @@
 # gitleaks config: default rules + stricter GitHub PAT detection
-# used by .git/hooks/pre-commit (gitleaks detect --pipe --config .gitleaks.toml)
+# used by tools/validate.sh and .githooks/pre-commit via `gitleaks git` (v8.19+ CLI)
 
 useDefault = true
 
