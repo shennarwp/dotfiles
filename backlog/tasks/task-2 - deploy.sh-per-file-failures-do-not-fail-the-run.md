@@ -1,7 +1,7 @@
 ---
 id: TASK-2
 title: 'deploy.sh: per-file failures do not fail the run'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
