@@ -201,6 +201,11 @@ Conventions: one task per PR, matching the git workflow below. When a task is
 finished, run `backlog task edit <id> --status Done` rather than deleting the
 file, so the record of what was attempted survives in git.
 
+Work in progress:
+- Before starting each task, set its status to `in_progress` (via backlog task edit).
+- After verifying the task is complete, move it to `Done`.
+- Each task should be committed as a single git commit (one commit per task).
+
 ## Parked work
 
 - Hooks/tooling are in place (`tools/` + `.githooks/`); nothing parked there.
