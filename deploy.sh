@@ -79,7 +79,7 @@ done
 
 # --- helpers -----------------------------------------------------------------
 log()  { printf '%s\n' "$*"; }
-fail() { printf '  \033[31m[FAIL]\033[0m %s\n' "$*"; }
+fail() { printf '  \033[31m[FAIL]\033[0m %s\n' "$*"; EXIT_CODE=1; }
 
 # mode a deployed file should end up with. .bash_aliases_local is the
 # host-local override layer and can carry secrets (e.g. NINEROUTER_KEY), so it
