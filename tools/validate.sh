@@ -116,6 +116,33 @@ while IFS= read -r -d '' f; do
 done < <(tracked_files)
 [ "$sh_n" -gt 0 ] && pass "bash -n on $sh_n shell file(s)"
 
+# --- 1a. ash/dash -n for openwrt ----------------------------------------------
+
+head_ "ash/dash syntax (merged-openwrt/)"
+if command -v busybox >/dev/null 2>&1 && busybox ash -n /dev/null >/dev/null 2>&1; then
+    ash_cmd="busybox ash"
+elif command -v dash >/dev/null 2>&1; then
+    ash_cmd="dash"
+else
+    skip "neither busybox ash nor dash installed"
+fi
+
+if [ -n "${ash_cmd:-}" ]; then
+    ash_n=0
+    while IFS= read -r -d '' f; do
+        case "$f" in
+            merged-openwrt/.bash_aliases|merged-openwrt/.profile) ;;
+            *) continue ;;
+        esac
+        ash_n=$((ash_n + 1))
+        if ! out=$($ash_cmd -n "$f" 2>&1); then
+            fail "$f"
+            [ -n "$out" ] && printf '        %s\n' "$out"
+        fi
+    done < <(tracked_files)
+    [ "$ash_n" -gt 0 ] && pass "$ash_cmd -n on $ash_n openwrt file(s)"
+fi
+
 # --- 2. vimrc -----------------------------------------------------------------
 
 head_ "vimrc"
