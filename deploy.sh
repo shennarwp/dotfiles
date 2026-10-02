@@ -161,9 +161,8 @@ push() {
         backup_remote "$host" "$dst"
     fi
     if [ "$pipe" = 1 ]; then
-        cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "mkdir -p \$(dirname '$dst'); cat > '$dst'"
+        cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "cat > '$dst'"
     else
-        ssh "${SSH_OPTS[@]}" "$host" "mkdir -p \$(dirname '$dst')" 2>/dev/null || :
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
     fi
     local mode; mode="$(deploy_mode "${dst##*/}")"
