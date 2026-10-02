@@ -1,7 +1,7 @@
 ---
 id: TASK-30
 title: Add NINEROUTER_URL to each debian host's local override layer before deploying
-status: Done (user action required)
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
