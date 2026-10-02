@@ -1,7 +1,7 @@
 ---
 id: TASK-8
 title: Trim the prompt fork count in __makePS1
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
 labels:
@@ -21,10 +21,10 @@ Forks 8+ processes per prompt: `$(command -v git)`, `$(git name-rev)`, `$(git st
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 No `$(whoami)` in __makePS1; the three call sites use $USER
-- [ ] #2 SCREEN_PATHS is computed once at load, not per prompt
-- [ ] #3 The branch name comes from `git rev-parse --abbrev-ref HEAD`
-- [ ] #4 Prompt output is unchanged apart from the branch source
+- [x] #1 No `$(whoami)` in __makePS1; the three call sites use $USER
+- [x] #2 SCREEN_PATHS is computed once at load, not per prompt
+- [x] #3 The branch name comes from `git rev-parse --abbrev-ref HEAD`
+- [x] #4 Prompt output is unchanged apart from the branch source
 <!-- AC:END -->
 
 ## Definition of Done

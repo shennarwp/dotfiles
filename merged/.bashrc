@@ -150,6 +150,9 @@ function __getMachineId() {
     fi
 }
 
+# screen sessions (computed once at load time)
+__SCREEN_PATHS="/var/run/screens/S-${USER} /var/run/screen/S-${USER} /var/run/uscreens/S-${USER}"
+
 function __makePS1() {
     local EXIT="$?"
 
@@ -187,9 +190,7 @@ if [ ! -n "${HOST_COLOR}" ]; then
     fi
 
     # screen sessions
-    local SCREEN_PATHS="/var/run/screens/S-${USER} /var/run/screen/S-${USER} /var/run/uscreens/S-${USER}"
-
-    for screen_path in ${SCREEN_PATHS}; do
+    for screen_path in ${__SCREEN_PATHS}; do
         if [ -d "${screen_path}" ]; then
             SCREEN_JOBS=$(ls "${screen_path}" | wc -w)
             if [ "${SCREEN_JOBS}" != "0" ]; then
@@ -205,7 +206,7 @@ if [ ! -n "${HOST_COLOR}" ]; then
 
     # git branch
     if [ -x "$(command -v git 2>&1)" ]; then
-        local branch="$(git name-rev --name-only HEAD 2>/dev/null)"
+        local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 
         if [ -n "${branch}" ]; then
             local git_status="$(git status --porcelain -b 2>/dev/null)"
