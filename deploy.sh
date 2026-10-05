@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=all
 # HELP-BEGIN
 #
 # deploy.sh — deploy dotfiles to all hosts.

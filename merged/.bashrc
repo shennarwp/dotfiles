@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+# shellcheck disable=all
 # ~/.bashrc: executed by bash(1) for non-login interactive shells.
 # Merged from: alpinesky, m9, ruipryux, x270, x270-cygwin.
 

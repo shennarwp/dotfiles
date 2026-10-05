@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+# shellcheck disable=all
 # ~/.bashrc: executed by bash(1) for non-login interactive shells.
 # QNAP NAS variant of the merged dotfiles.
 
