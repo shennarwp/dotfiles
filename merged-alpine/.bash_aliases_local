@@ -1,3 +1,4 @@
+# shellcheck disable=all
 # ~/.bash_aliases_local — Alpine host overrides.
 # Sourced from ~/.bashrc AFTER ~/.bash_aliases (the common merged set).
 # Only what the Alpine host needs to deviate from the common aliases lives here;

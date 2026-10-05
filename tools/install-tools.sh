@@ -4,7 +4,7 @@
 #
 #   gitleaks    required for the secret scan (pre-commit hook); report SKIP
 #               without it
-#   shellcheck  optional lint pass; report SKIP without it
+#   ShellCheck    optional lint pass; report SKIP without it
 #
 # Both land in ~/bin (gitleaks) or come from the distro (shellcheck). Nothing is
 # installed into the repo, and nothing here is required to deploy dotfiles.

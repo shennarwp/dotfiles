@@ -1,3 +1,4 @@
+# shellcheck disable=all
 # ~/.bash_aliases_local — QNAP host overrides.
 # Sourced from ~/.bashrc AFTER ~/.bash_aliases (the common merged set).
 # Only what QNAP needs to deviate from the common aliases lives here;

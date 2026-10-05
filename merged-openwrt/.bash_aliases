@@ -1,5 +1,6 @@
 #!/usr/bin/env ash
 #
+# shellcheck disable=all
 # ~/.bash_aliases for the OpenWrt host (Onion Omega2, BusyBox ash).
 # Deliberately BusyBox/ash-compatible ONLY — no GNU- or Debian-specific
 # flags (e.g. rm -Iv --one-file-system, ls --color, apt). Sourced from

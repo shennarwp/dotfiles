@@ -159,7 +159,6 @@ fi
 # --- 3. qnap copy drift -------------------------------------------------------
 
 head_ "synced-copy drift (merged/ -> merged-qnap/)"
-drift_found=0
 for pair in ".bash_functions" ".bash_logout"; do
     src="merged/$pair"
     dst="merged-qnap/$pair"
@@ -169,7 +168,6 @@ for pair in ".bash_functions" ".bash_logout"; do
         pass "$dst matches $src"
     else
         fail "$dst drifted from $src (fix: cp $src $dst)"
-        drift_found=1
     fi
 done
 

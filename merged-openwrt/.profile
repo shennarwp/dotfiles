@@ -1,3 +1,4 @@
+# shellcheck disable=all
 # ~/.profile for the OpenWrt host (Onion Omega2, BusyBox ash).
 #
 # Sources ~/.bash_aliases (the merged-openwrt/ deliberate BusyBox/ash-compatible

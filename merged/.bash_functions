@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=all
 #
 # ~/.bash_functions: functions pulled out of the merged .bash_aliases
 # (from ruipryux). Sourced from ~/.bashrc after .bash_aliases.
