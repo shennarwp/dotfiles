@@ -12,7 +12,7 @@ Read before editing. `merged/` is the source of truth and is deployed live.
 - `deploy.sh` — fleet deploy; backs up to `~/.dotfiles-backup-<ts>/` (`BACKUP_KEEP=10`). Flags: `--local-only`, `--no-backup`, `--dry-run`
 - `opencode/`, `pidev/` — 9router clients; read `NINEROUTER_URL`/`NINEROUTER_KEY` from `~/.bash_aliases_local`, never hardcode
 - `backlog/` — task board (Backlog.md), one file per task under `backlog/tasks/`
-- `.githooks/pre-commit` — run `tools/install-hooks.sh` after clone
+- `.githooks/pre-commit` — one command after clone: `tools/install-hooks.sh` sets `core.hooksPath=.githooks` (no copying)
 
 See `docs/fleet.md` for host inventory, versions, and current status.
 

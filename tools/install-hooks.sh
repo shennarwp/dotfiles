@@ -7,13 +7,16 @@
 # installed from here. Re-run this after a fresh clone or after moving the repo.
 #
 # Usage:
-#   tools/install-hooks.sh              copy hooks into .git/hooks (default)
-#   tools/install-hooks.sh --hooks-path instead set core.hooksPath=.githooks
+#   tools/install-hooks.sh              set core.hooksPath=.githooks (default)
+#   tools/install-hooks.sh --copy       copy hooks into .git/hooks instead
 #   tools/install-hooks.sh --uninstall  remove installed hooks / clear the config
 #
-# Installed hooks are marked with a "managed-by: tools/install-hooks.sh" line;
-# --uninstall only deletes copies carrying that marker, so a hand-written hook
-# is backed up (hooks/TIMESTAMP.bak) instead of being clobbered.
+# hooks-path mode needs no copying, so the tracked hooks cannot go stale against
+# a working-tree edit. --copy is kept for setups that cannot set core.hooksPath
+# (older git, or a shared .git directory); copies are marked with a
+# "managed-by: tools/install-hooks.sh" line, and --uninstall only deletes copies
+# carrying that marker, so a hand-written hook is backed up
+# (hooks/TIMESTAMP.bak) instead of being clobbered.
 # HELP-END
 
 set -u
@@ -27,13 +30,14 @@ GIT_DIR="$(git rev-parse --git-dir 2>/dev/null)" || {
 }
 HOOKS_SRC="$REPO_DIR/.githooks"
 MARKER="# managed-by: tools/install-hooks.sh"
-MODE=copy
+MODE=hooks-path
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --copy)      MODE=copy; shift ;;
         --hooks-path) MODE=hooks-path; shift ;;
-        --uninstall)  MODE=uninstall; shift ;;
+        --uninstall) MODE=uninstall; shift ;;
         -h|--help)    
             awk '/^# HELP-BEGIN$/{flag=1;next} /^# HELP-END$/{flag=0} flag {sub(/^# ?/, ""); print}' "$0"
             exit 0 ;;
@@ -57,7 +61,12 @@ case "$MODE" in
     hooks-path)
         git config core.hooksPath "$HOOKS_SRC"
         echo "core.hooksPath = $HOOKS_SRC"
-        echo "hooks installed: $(list_hooks | tr '\n' ' ')"
+        echo "hooks active: $(list_hooks | tr '\n' ' ')"
+        for name in $(list_hooks); do
+            if [ -f "$GIT_DIR/hooks/$name" ] && grep -qF "$MARKER" "$GIT_DIR/hooks/$name" 2>/dev/null; then
+                echo "note: stale copy $GIT_DIR/hooks/$name is now ignored (--uninstall removes it)"
+            fi
+        done
         ;;
     uninstall)
         git config --unset core.hooksPath 2>/dev/null

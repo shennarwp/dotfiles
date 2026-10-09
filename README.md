@@ -44,7 +44,7 @@ vscode/                 Windows VS Code config for remote development over WSL
 .githooks/pre-commit    tracked pre-commit hook -> tools/validate.sh --hook
 tools/                  repo tooling
 ├── validate.sh         syntax, vimrc, drift, newlines, JSON, gitleaks
-├── install-hooks.sh    install/uninstall the tracked hooks in .git/hooks
+├── install-hooks.sh    activate the tracked hooks in .githooks/ (core.hooksPath)
 └── install-tools.sh    install gitleaks (and shellcheck, if apt)
 
 .gitleaks.toml          secret-scan config (used by the pre-commit hook)
@@ -92,7 +92,7 @@ summary). See `./deploy.sh --help`.
 tools/validate.sh              # syntax, vimrc, drift, newlines, JSON, gitleaks
 tools/validate.sh --hook       # pre-commit subset (staged changes only)
 tools/install-tools.sh         # install gitleaks (and shellcheck via apt)
-tools/install-hooks.sh         # install the tracked hook into .git/hooks
+tools/install-hooks.sh         # point core.hooksPath at .githooks/ (no copying)
 ```
 
 `merged-qnap/.bash_functions` and `merged-qnap/.bash_logout` are synced copies of
@@ -106,9 +106,11 @@ cp merged/.bash_logout    merged-qnap/.bash_logout
 
 ## Secret scanning
 
-The hook source is tracked in `.githooks/pre-commit` and installed with
-`tools/install-hooks.sh` (`.git/hooks/` itself is not tracked). It runs
-`tools/validate.sh --hook`, whose gitleaks pass scans the staged diff:
+The hook source is tracked in `.githooks/pre-commit` and activated with
+`tools/install-hooks.sh`, which sets `core.hooksPath=.githooks` rather than
+copying into `.git/hooks/` (which git does not track). Nothing needs syncing after
+an edit to the hook. Use `--copy` only if `core.hooksPath` is unavailable. The
+hook runs `tools/validate.sh --hook`, whose gitleaks pass scans the staged diff:
 
 ```bash
 gitleaks git --staged --config .gitleaks.toml   # what the hook runs
