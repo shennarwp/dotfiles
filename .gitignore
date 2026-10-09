@@ -28,6 +28,10 @@ Thumbs.db
 *.swp
 *.swo
 
+# JetBrains IDEs (GoLand / IntelliJ / WebStorm)
+.idea/
+*.iml
+
 # gitleaks working files
 .gitleaks-baseline.json
 gitleaks-report.*
