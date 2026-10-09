@@ -1,10 +1,10 @@
 ---
 id: TASK-22
 title: Make core.hooksPath the documented default
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
-updated_date: '2026-10-09 13:05'
+updated_date: '2026-10-09 13:06'
 labels:
   - tools
   - ci
