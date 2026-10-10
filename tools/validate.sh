@@ -11,7 +11,9 @@
 #   5. shellcheck, when installed
 #   6. JSON / JSONC parse check (perl JSON::PP; whole-line // comments and
 #      trailing commas are stripped first, as VS Code tolerates them)
-#   7. gitleaks secret scan — full history by default, staged diff with --hook
+#   7. eol attributes: vscode/wsl-ssh.bat must be eol=crlf with CRLF content
+#      (cmd.exe target — never let git silently normalize it to LF)
+#   8. gitleaks secret scan — full history by default, staged diff with --hook
 #
 # Missing optional tools (shellcheck, gitleaks) are reported as SKIP, never as
 # failures. Install shellcheck/gitleaks with:  tools/install-tools.sh
@@ -225,7 +227,25 @@ while IFS= read -r -d '' f; do
 done < <(tracked_files)
 [ "$n_json" -eq 0 ] && skip "no json files tracked"
 
-# --- 7. gitleaks --------------------------------------------------------------
+# --- 7. eol attributes ---------------------------------------------------------
+
+# The only cmd.exe-executed file in the repo: it must keep CRLF on disk.
+# git eol=crlf stores LF in the index but emits CRLF in the worktree, so a
+# fresh checkout satisfies this; an editor that saved LF makes validate fail
+# (reported, never silently normalized).
+
+head_ "eol attributes"
+BAT_FILE="vscode/wsl-ssh.bat"
+BAT_ATTR="$(git check-attr eol -- "$BAT_FILE" | sed 's/.*: eol: //')"
+if [ "$BAT_ATTR" = crlf ] && grep -q $'\r' "$BAT_FILE"; then
+    pass "$BAT_FILE is eol=crlf with CRLF line endings"
+else
+    fail "$BAT_FILE must be eol=crlf with CRLF content "
+    printf '        attribute: %s\n' "$BAT_ATTR"
+    printf '        fix: .gitattributes needs "vscode/wsl-ssh.bat text eol=crlf", then git add --renormalize + checkout-index -f\n'
+fi
+
+# --- 8. gitleaks --------------------------------------------------------------
 
 head_ "gitleaks"
 GL="$(find_gitleaks)"

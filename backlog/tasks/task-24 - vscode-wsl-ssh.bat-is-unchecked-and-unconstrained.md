@@ -1,9 +1,10 @@
 ---
 id: TASK-24
 title: vscode/wsl-ssh.bat is unchecked and unconstrained
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - validate
 dependencies: []
@@ -21,13 +22,13 @@ It is the only Windows-executed script in the repo, gets no syntax pass from too
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The file has an eol=crlf entry
-- [ ] #2 validate.sh asserts the expected eol attribute for it
-- [ ] #3 A CRLF file is reported rather than silently normalized
+- [x] #1 The file has an eol=crlf entry
+- [x] #2 validate.sh asserts the expected eol attribute for it
+- [x] #3 A CRLF file is reported rather than silently normalized
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

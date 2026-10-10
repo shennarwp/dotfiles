@@ -28,5 +28,8 @@ deploy.sh text eol=lf
 .gitleaks.toml text eol=lf
 terminator/config text eol=lf
 
+# batch file executed by cmd.exe (VS Code Remote SSH): CRLF
+vscode/wsl-ssh.bat text eol=crlf
+
 # binary export: never diff, never EOL-translate
 *.rayconfig binary
