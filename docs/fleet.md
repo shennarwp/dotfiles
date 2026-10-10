@@ -26,7 +26,7 @@ Full board: `backlog/tasks/`. Highlights:
 - **TASK-5 → TASK-6** — sanitize machine-specific data from tracked files; TASK-6 depends on TASK-5.
 - **TASK-18** — smoke test for `pidev/extension/9router.ts`.
 - **TASK-20** — install shellcheck locally so the validate pass stops reporting SKIP.
-- **TASK-24, TASK-25** — constrain `vscode/wsl-ssh.bat`; pin versions in `opencode/install.sh`.
+- **TASK-25** — pin versions in `opencode/install.sh` and verify the fetched SKILL.md.
 - **TASK-28, TASK-31, TASK-32** — low priority (workspace README, portable VS Code settings, ignore checks).
 
 ## GPG
