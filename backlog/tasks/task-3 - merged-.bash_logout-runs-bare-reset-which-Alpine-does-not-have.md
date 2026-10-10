@@ -1,9 +1,10 @@
 ---
 id: TASK-3
 title: 'merged/.bash_logout runs bare reset, which Alpine does not have'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
 dependencies: []
@@ -21,13 +22,13 @@ ordinal: 3000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 `.bash_logout` guards the call: `command -v reset >/dev/null && reset || clear`
-- [ ] #2 No output on a host that has reset
-- [ ] #3 tools/validate.sh passes
+- [x] #1 `.bash_logout` guards the call: `command -v reset >/dev/null && reset || clear`
+- [x] #2 No output on a host that has reset
+- [x] #3 tools/validate.sh passes
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
