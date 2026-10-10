@@ -4,6 +4,7 @@ title: Document the .bash_profile / .profile / .bashrc sourcing order
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - docs
 dependencies: []
@@ -26,6 +27,6 @@ ordinal: 27000
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

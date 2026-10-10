@@ -4,6 +4,7 @@ title: Push the ANSI-only (no tput) .bashrc to the remote fleet
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
 dependencies: []
@@ -21,13 +22,13 @@ m9, alp, rui, fata, zot still run the older tput-gated version. The guarded Linu
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 ~/.ssh/config exists in this clone with the fleet aliases
-- [ ] #2 `./deploy.sh --dry-run` shows a manifest for every host
-- [ ] #3 All five hosts confirm the new .bashrc is live
+- [x] #1 ~/.ssh/config exists in this clone with the fleet aliases
+- [x] #2 `./deploy.sh --dry-run` shows a manifest for every host
+- [x] #3 All five hosts confirm the new .bashrc is live
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

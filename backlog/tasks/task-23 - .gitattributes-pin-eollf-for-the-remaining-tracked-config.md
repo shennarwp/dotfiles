@@ -4,6 +4,7 @@ title: '.gitattributes: pin eol=lf for the remaining tracked config'
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - tools
 dependencies: []
@@ -26,6 +27,6 @@ ordinal: 23000
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

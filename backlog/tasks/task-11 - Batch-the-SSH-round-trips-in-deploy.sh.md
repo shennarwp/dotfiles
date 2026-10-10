@@ -4,6 +4,7 @@ title: Batch the SSH round-trips in deploy.sh
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
 dependencies: []
@@ -21,13 +22,13 @@ Per Debian host it makes 21: `push` calls `backup_remote` (1 ssh), then scp, the
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Backups for a host happen in one remote call, not one per file
-- [ ] #2 The pruning logic exists once, not twice
-- [ ] #3 A dry run makes no ssh connections
+- [x] #1 Backups for a host happen in one remote call, not one per file
+- [x] #2 The pruning logic exists once, not twice
+- [x] #3 A dry run makes no ssh connections
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

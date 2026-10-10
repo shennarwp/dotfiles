@@ -4,6 +4,7 @@ title: Stop using hardcoded line ranges for --help in the tooling
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - tools
   - docs
@@ -22,13 +23,13 @@ ordinal: 10000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 `./deploy.sh --help` prints the full header, including the Backups section
-- [ ] #2 `tools/install-hooks.sh --help` no longer prints `set -u`
-- [ ] #3 Adding a comment line to any header does not truncate or leak the help output
+- [x] #1 `./deploy.sh --help` prints the full header, including the Backups section
+- [x] #2 `tools/install-hooks.sh --help` no longer prints `set -u`
+- [x] #3 Adding a comment line to any header does not truncate or leak the help output
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

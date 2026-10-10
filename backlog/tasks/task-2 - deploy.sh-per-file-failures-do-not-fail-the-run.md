@@ -4,6 +4,7 @@ title: 'deploy.sh: per-file failures do not fail the run'
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
 dependencies: []
@@ -21,13 +22,13 @@ ordinal: 2000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A push that returns non-zero makes deploy.sh exit non-zero
-- [ ] #2 The failing filename and host are named in the output
-- [ ] #3 A successful run still exits 0
+- [x] #1 A push that returns non-zero makes deploy.sh exit non-zero
+- [x] #2 The failing filename and host are named in the output
+- [x] #3 A successful run still exits 0
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

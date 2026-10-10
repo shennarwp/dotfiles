@@ -1,9 +1,10 @@
 ---
 id: TASK-21
 title: Add tests for the deployment matrix
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - ci
   - deploy
@@ -22,12 +23,12 @@ QNAP, Alpine, OpenWrt/ash: run `deploy.sh --dry-run` against a synthetic `~/.ssh
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A synthetic ssh config maps each fixture host to the expected manifest
-- [ ] #2 The test never opens an ssh connection
+- [x] #1 A synthetic ssh config maps each fixture host to the expected manifest
+- [x] #2 The test never opens an ssh connection
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

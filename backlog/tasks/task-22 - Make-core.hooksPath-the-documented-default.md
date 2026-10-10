@@ -23,12 +23,12 @@ ordinal: 22000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A documented command sets core.hooksPath, or install-hooks.sh defaults to hooks-path mode
-- [ ] #2 AGENTS.md or README documents the one command a fresh clone needs
+- [x] #1 A documented command sets core.hooksPath, or install-hooks.sh defaults to hooks-path mode
+- [x] #2 AGENTS.md or README documents the one command a fresh clone needs
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

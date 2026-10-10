@@ -4,6 +4,7 @@ title: Expand merged/.vimrc
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - docs
 dependencies: []
@@ -28,5 +29,5 @@ Four lines today: no `set hidden`, no clipboard, no `undofile`, no `termguicolor
 ## Definition of Done
 <!-- DOD:BEGIN -->
 - [x] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
