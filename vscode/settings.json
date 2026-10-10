@@ -3,7 +3,7 @@
         "wsl.localhost"
     ],
 
-    "remote.SSH.configFile": "/home/shennarwp/.ssh/config",
+    "remote.SSH.configFile": "${env:HOME}/.ssh/config",
 
     "remote.SSH.remotePlatform": {
         "m9-zt": "linux",
