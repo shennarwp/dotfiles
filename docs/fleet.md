@@ -31,7 +31,7 @@ Full board: `backlog/tasks/`. Highlights:
 
 ## GPG
 
-Key `C06C4DD034067569` (Shenna, shennawew@outlook.com) migrated Cygwin → WSL gpg 2.4.7 (Sep 2026). Trust ultimate. Cygwin keyring emptied, backup at `~/cygwin-gnupg-backup-20260913-232224/`. Only this key remains on GitHub; the other two were removed.
+Signing key (id and email live in `git config user.signingkey` / `user.email`) migrated Cygwin → WSL gpg 2.4.7 (Sep 2026). Trust ultimate. The old Cygwin keyring was emptied; a backup copy is kept outside the repo. Only one key remains on GitHub; the other two were removed.
 
 In this clone `user.signingkey` is set but `commit.gpgsign` is `false`. Re-enable with `git config --local commit.gpgsign true` if signed commits are wanted.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# ~/.bash_aliases: aliases merged from alpinesky, m9, ruipryux, x270, x270-cygwin.
+# ~/.bash_aliases: shared aliases for the whole fleet.
 # Sourced from ~/.bashrc. Kept to plain aliases only; functions live in .bash_functions.
 
 # --- navigation -----------------------------------------------------------
@@ -66,23 +66,23 @@ alias uf='~/script/ufetch'
 alias tq='~/torque'
 
 # --- wake on lan -----------------------------------------------------------
-alias wakex41='wakeonlan 00:0A:E4:3B:D9:6D'
+# The target MAC is host-local: export WOL_X41_MAC in ~/.bash_aliases_local,
+# which .bashrc sources after this file, so the alias expands it at call time.
+alias wakex41='wakeonlan "$WOL_X41_MAC"'
 
-# --- windows / cygwin ----------------------------------------------------
-alias chtw="cd ~/../../cygdrive/c/Users/ruip_/OneDrive/Dokumen/HTW"
-
-# Sublime Text: WSL mounts windows drives on /mnt/c, Cygwin uses cygdrive
-if [ -d /mnt/c ]; then
-    alias subl='/mnt/c/Program\ Files/Sublime\ Text/sublime_text.exe'
-else
-    alias subl='C:/Program\ Files/Sublime\ Text/sublime_text.exe'
-fi
-alias sb='subl'
-alias spt='C:/Program\ Files/spotify-tui/spt.exe'
-alias pst='pstop.exe'
-alias psn='psnet.exe'
+# --- dev helpers -----------------------------------------------------------
 alias jpt='jupyter notebook'
 alias stg='stack ghci'
+
+# --- windows / cygwin (host-local) -----------------------------------------
+# Windows-only aliases and their paths are machine-specific, so they belong in
+# ~/.bash_aliases_local on Windows/Cygwin/WSL hosts. Examples, not tracked:
+#   alias subl='/mnt/c/Program Files/Sublime Text/sublime_text.exe'
+#   alias sb='subl'
+#   alias spt='C:/Program Files/spotify-tui/spt.exe'
+#   alias pst='pstop.exe'
+#   alias psn='psnet.exe'
+#   alias chtw='cd /mnt/c/Users/<you>/OneDrive/Dokumen/HTW'
 
 # --- git ------------------------------------------------------------------
 alias g='git'

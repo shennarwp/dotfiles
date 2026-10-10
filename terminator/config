@@ -20,7 +20,7 @@
       maximised = False
       fullscreen = False
       size = 900, 580
-      title = ~ [shennarwp]
+      title = ~
       last_active_term = f53769ab-d437-480f-bab9-1d472493e818
       last_active_window = True
     [[[terminal1]]]

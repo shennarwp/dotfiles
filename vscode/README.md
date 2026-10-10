@@ -21,4 +21,4 @@ Then install the [Remote - SSH](https://marketplace.visualstudio.com/items?itemN
 ## Notes
 
 - `wsl-ssh.bat` converts Windows paths to WSL paths before invoking `ssh` inside WSL. This lets VS Code's Remote SSH extension work seamlessly when your SSH config and keys live under `~/` in WSL.
-- `remote.SSH.configFile` points to the WSL SSH config — adjust if your username differs from `shennarwp`.
+- `remote.SSH.configFile` points to the WSL SSH config via `${env:HOME}` — adjust the path if your home directory differs.
