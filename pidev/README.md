@@ -30,7 +30,7 @@ Same two variables as opencode, both per-host, both in `~/.bash_aliases_local`
 (`chmod 600`), which `merged/.bashrc` sources:
 
 ```bash
-export NINEROUTER_URL="http://9router.m9.home.arpa"   # per-host endpoint
+export NINEROUTER_URL="http://<gateway-host>"             # per-host endpoint
 export NINEROUTER_KEY="sk-..."                        # Dashboard → Keys
 ```
 

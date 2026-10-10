@@ -30,7 +30,7 @@ into this repo; the key goes into `~/.bashrc` and opencode's auth store only.
 | A 9router key | Dashboard → Keys. Needed unless the gateway runs with `requireApiKey=false` |
 | `curl` | used for the health check and the skills download |
 | Reachable gateway | `curl $NINEROUTER_URL/api/health` → `{"ok":true}` |
-| LAN name resolvable | not required if you override to the ZeroTier IP instead |
+| Gateway reachable | not required if you override to a VPN/routable address instead |
 
 ## 1. Install opencode
 
@@ -48,7 +48,7 @@ Both variables are **per-host** and both live in `~/.bash_aliases_local`
 `~/.bash_aliases`:
 
 ```bash
-export NINEROUTER_URL="http://9router.m9.home.arpa"   # per-host endpoint
+export NINEROUTER_URL="http://<gateway-host>"             # per-host endpoint
 export NINEROUTER_KEY="sk-..."                        # Dashboard → Keys
 ```
 
@@ -72,15 +72,15 @@ curl $NINEROUTER_URL/api/health -H "Authorization: Bearer $NINEROUTER_KEY"
 # {"ok":true}
 ```
 
-`9router.m9.home.arpa` is the gateway's **mDNS/LAN** name (port 80), so it
-works without ZeroTier as long as you're on the same network. The gateway also
-answers on its ZeroTier address `10.147.17.5`, which works from off-LAN but
-only while ZeroTier is up. To switch, just override `NINEROUTER_URL` in
+`<gateway-host>` is the gateway's **mDNS/LAN** name (port 80), so it works
+without a VPN as long as you are on the same network. Off-LAN, point
+`NINEROUTER_URL` at a VPN/routable address instead — that also requires the
+gateway's peer to be online. To switch, just override `NINEROUTER_URL` in
 `~/.bash_aliases_local` — both `baseURL`s in `opencode.jsonc` follow it:
 
 ```bash
-zerotier-cli listpeers     # expect the gateway's peer ONLINE
-ping -c1 10.147.17.5
+# expect the gateway's peer ONLINE, then it answers:
+ping -c1 <gateway-address>
 ```
 
 Note the two hosts may not serve the same model set — the set depends on which
@@ -219,7 +219,9 @@ filter box matches nothing, because the model labels are `Big Pickle`,
   `~/.local/share/opencode/auth.json`. Both are outside this repo and outside
   `deploy.sh`'s reach. Keep it that way — `tools/validate.sh` runs gitleaks and
   the repo is public.
-- Only the non-secret `NINEROUTER_URL` is tracked, in `merged/.bashrc`.
+- Only the non-secret `NINEROUTER_URL` is tracked, in the per-host override
+  layer (`~/.bash_aliases_local` on Debian hosts, `merged-qnap/` and
+  `merged-alpine/` tracked copies on those two).
 - **Never** put the key in `~/.bashrc`: `deploy.sh` overwrites that file
   wholesale with `merged/.bashrc`, so the key would be lost on the next deploy
   (and `deploy.sh` does not back up first — see FIXME.md).
