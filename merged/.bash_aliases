@@ -74,15 +74,19 @@ alias wakex41='wakeonlan "$WOL_X41_MAC"'
 alias jpt='jupyter notebook'
 alias stg='stack ghci'
 
-# --- windows / cygwin (host-local) -----------------------------------------
-# Windows-only aliases and their paths are machine-specific, so they belong in
-# ~/.bash_aliases_local on Windows/Cygwin/WSL hosts. Examples, not tracked:
-#   alias subl='/mnt/c/Program Files/Sublime Text/sublime_text.exe'
-#   alias sb='subl'
-#   alias spt='C:/Program Files/spotify-tui/spt.exe'
-#   alias pst='pstop.exe'
-#   alias psn='psnet.exe'
-#   alias chtw='cd /mnt/c/Users/<you>/OneDrive/Dokumen/HTW'
+# --- windows / cygwin -------------------------------------------------------
+# Windows-only aliases; keep them here, harmless on Linux hosts without the
+# targets. chtw/spt were removed (machine-specific paths).
+#
+# Sublime Text: WSL mounts windows drives on /mnt/c, Cygwin uses cygdrive
+if [ -d /mnt/c ]; then
+    alias subl='/mnt/c/Program\ Files/Sublime\ Text/sublime_text.exe'
+else
+    alias subl='C:/Program\ Files/Sublime\ Text/sublime_text.exe'
+fi
+alias sb='subl'
+alias pst='pstop.exe'
+alias psn='psnet.exe'
 
 # --- git ------------------------------------------------------------------
 alias g='git'
