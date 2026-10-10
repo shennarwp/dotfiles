@@ -25,7 +25,6 @@ Full board: `backlog/tasks/`. Highlights:
 - **TASK-3** — `merged/.bash_logout` runs bare `reset`; Alpine has no ncurses.
 - **TASK-5 → TASK-6** — sanitize machine-specific data from tracked files; TASK-6 depends on TASK-5.
 - **TASK-18** — smoke test for `pidev/extension/9router.ts`.
-- **TASK-20** — install shellcheck locally so the validate pass stops reporting SKIP.
 - **TASK-24, TASK-25** — constrain `vscode/wsl-ssh.bat`; pin versions in `opencode/install.sh`.
 - **TASK-28, TASK-31, TASK-32** — low priority (workspace README, portable VS Code settings, ignore checks).
 
@@ -50,7 +49,7 @@ In this clone `user.signingkey` is set but `commit.gpgsign` is `false`. Re-enabl
 ## Toolchain
 
 - `gitleaks` 8.30.1 at `~/bin/gitleaks` (installed by `tools/install-tools.sh`). Uses v8.19+ CLI: `gitleaks git [--staged]`. The old `gitleaks detect --pipe` form no longer exists.
-- `shellcheck` not installed on this machine → `tools/validate.sh` reports that pass as SKIP. `tools/install-tools.sh` installs it via apt.
+- `shellcheck` 0.10.0 installed via apt (`tools/install-tools.sh`); the lint pass now reports PASS, not SKIP.
 
 ## Backup pattern
 
