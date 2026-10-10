@@ -1,9 +1,10 @@
 ---
 id: TASK-19
 title: Add a CI workflow running tools/validate.sh
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - ci
 dependencies: []
@@ -21,13 +22,13 @@ Run `tools/validate.sh` on push and PR (syntax, vimrc, drift, newlines, JSON, gi
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A workflow file under .github/workflows runs tools/validate.sh on pull_request
-- [ ] #2 shellcheck is installed in CI, so that pass reports PASS rather than SKIP
-- [ ] #3 A deliberately broken .bashrc fails the workflow
+- [x] #1 A workflow file under .github/workflows runs tools/validate.sh on pull_request
+- [x] #2 shellcheck is installed in CI, so that pass reports PASS rather than SKIP
+- [x] #3 A deliberately broken .bashrc fails the workflow
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

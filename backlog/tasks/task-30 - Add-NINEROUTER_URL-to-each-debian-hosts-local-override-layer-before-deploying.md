@@ -4,6 +4,7 @@ title: Add NINEROUTER_URL to each debian host's local override layer before depl
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
 dependencies:
@@ -22,12 +23,12 @@ One line per host, before the new .bashrc reaches it: export NINEROUTER_URL="htt
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 NINEROUTER_URL is set on m9, alp, rui, fata and zot
-- [ ] #2 `opencode` starts and lists models on each of those hosts
+- [x] #1 NINEROUTER_URL is set on m9, alp, rui, fata and zot
+- [x] #2 `opencode` starts and lists models on each of those hosts
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

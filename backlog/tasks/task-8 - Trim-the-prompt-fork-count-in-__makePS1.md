@@ -4,6 +4,7 @@ title: Trim the prompt fork count in __makePS1
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - prompt
 dependencies: []
@@ -29,6 +30,6 @@ Forks 8+ processes per prompt: `$(command -v git)`, `$(git name-rev)`, `$(git st
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->

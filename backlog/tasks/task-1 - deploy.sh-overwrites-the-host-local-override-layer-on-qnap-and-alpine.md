@@ -4,6 +4,7 @@ title: deploy.sh overwrites the host-local override layer on qnap and alpine
 status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-10 00:00'
 labels:
   - deploy
   - privacy
@@ -20,13 +21,13 @@ deploy.sh:209 and deploy.sh:212 push `merged-alpine/.bash_aliases_local` and `me
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A key in a host's ~/.bash_aliases_local survives a deploy on every manifest
-- [ ] #2 The deploy.sh header, deploy_mode comment and opencode/README.md no longer claim "never overwritten" where that is false
-- [ ] #3 deploy.sh --dry-run output shows the append/merge behaviour for the qnap and alpine manifests
+- [x] #1 A key in a host's ~/.bash_aliases_local survives a deploy on every manifest
+- [x] #2 The deploy.sh header, deploy_mode comment and opencode/README.md no longer claim "never overwritten" where that is false
+- [x] #3 deploy.sh --dry-run output shows the append/merge behaviour for the qnap and alpine manifests
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
