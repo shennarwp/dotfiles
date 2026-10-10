@@ -64,7 +64,7 @@ command -v pi >/dev/null 2>&1 || die "pi not found — install it first (see htt
 
 if [ -z "$NINEROUTER_URL" ]; then
   say "NINEROUTER_URL not set — add it to $LOCAL_OVERRIDES:"
-  say '  export NINEROUTER_URL="http://9router.m9.home.arpa"'
+  say '  export NINEROUTER_URL="http://<gateway-host>"'
 else
   say "NINEROUTER_URL = $NINEROUTER_URL"
 fi

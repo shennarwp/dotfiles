@@ -12,7 +12,7 @@
  * (see ../models.json). This provider only covers `9router`.
  *
  * Endpoint and key come from the environment:
- *   NINEROUTER_URL   e.g. http://9router.m9.home.arpa   (per-host, see repo/dotfiles/)
+ *   NINEROUTER_URL   e.g. http://<gateway-host>        (per-host, see repo/dotfiles/)
  *   NINEROUTER_KEY   dashboard -> Keys; falls back to /login 9router
  *
  * Try it without installing:
