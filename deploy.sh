@@ -331,7 +331,7 @@ deploy_remote() {
 
     # execute transfers
     for ((i=0; i<${#dsts[@]}; i++)); do
-        push "$host" "${srcs[$i]}" "${dsts[$i]}" 0 || fail "$host: ${dsts[$i]}"
+        push "$host" "${srcs[$i]}" "${dsts[$i]}" "$pipe" || fail "$host: ${dsts[$i]}"
     done
     log "  $host [$manifest] -> merged/ transfer phase"
 
