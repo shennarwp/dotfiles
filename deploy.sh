@@ -173,7 +173,8 @@ push() {
         return
     fi
     if [ "$pipe" = 1 ]; then
-        cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "cat > '$dst'"
+        local remote_dst="\$HOME/${dst#\~/}"
+        cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "cat > \"$remote_dst\""
     else
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
     fi

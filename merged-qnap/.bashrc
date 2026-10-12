@@ -29,6 +29,13 @@ export PATH=$HOME/.opencode/bin:$PATH
 if [ -d "$HOME/bin" ]; then
     PATH="$HOME/bin:$PATH"
 fi
+
+# Display system info on login — neofetch if available, else simple banner.
+if command -v neofetch >/dev/null 2>&1; then
+    neofetch
+else
+    printf '\e[31m[\e[0m\e[1mDEPLOY\e[0m\e[31m]\e[0m \e[1m%s\e[0m\n' "$(uname -s) $(uname -m)"
+fi
 export PATH
 
 export USER=$(id -un)
