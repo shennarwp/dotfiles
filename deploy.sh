@@ -150,15 +150,15 @@ backup_remote() {
         for d in $dstlist; do
             [ -f \"\$d\" ] || continue
             mkdir -p \"\$b\" 2>/dev/null || continue
-            cp -p \"\$d\" \"\$b/\$(basename \"\$d\")\" 2>/dev/null && n=$((n + 1))
+            cp -p \"\$d\" \"\$b/\$(basename \"\$d\")\" 2>/dev/null && n=\$((n + 1))
         done
         [ \"\$n\" -eq 0 ] && rmdir \"\$b\" 2>/dev/null
         root=\"\$HOME\"; keep=\"\$KEEP\"
-        # prune oldest, keeping the newest $keep
+        # prune oldest, keeping the newest \$keep
         i=0
-        for old in $(ls -dt \"\$root\"/.dotfiles-backup-* 2>/dev/null); do
-            i=$((i + 1))
-            [ \"$i\" -gt \"$keep\" ] && rm -rf \"$old\"
+        for old in \$(ls -dt \"\$root\"/.dotfiles-backup-* 2>/dev/null); do
+            i=\$((i + 1))
+            [ \"\$i\" -gt \"\$keep\" ] && rm -rf \"\$old\"
         done
         exit 0
     " 2>/dev/null
@@ -176,6 +176,41 @@ push() {
         cat "$src" | ssh "${SSH_OPTS[@]}" "$host" "cat > '$dst'"
     else
         scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}"
+    fi
+}
+
+# append one file (preserve host-local content) — scp when host has it, else
+# stream via ssh (qnap). NO backup, chmod, or verify (handled in batch).
+push_append() {
+    local host="$1" src="$2" dst="$3" pipe="$4"
+    if [ "$DRY_RUN" = 1 ]; then
+        log "    would merge ${src#./} -> ${host}:${dst} (preserving host-local)"
+        return 0
+    fi
+    if [ "$pipe" = 1 ]; then
+        ssh "${SSH_OPTS[@]}" "$host" "
+            dst='$dst'; tmp=\"\$dst.tmp.\$\$\"
+            cat > \"\$tmp\"
+            if [ -f \"\$dst\" ]; then
+                sed -e '/^# >>> deploy.sh managed/,/^# <<< deploy.sh managed/d' \"\$dst\" > \"\$dst.head\"
+            else
+                : > \"\$dst.head\"
+            fi
+            { cat \"\$dst.head\"; printf '\n# >>> deploy.sh managed\n'; cat \"\$tmp\"; printf '# <<< deploy.sh managed\n'; } > \"\$dst\"
+            rm -f \"\$tmp\" \"\$dst.head\"
+        "
+    else
+        scp -q "${SSH_OPTS[@]}" "$src" "${host}:${dst}.tmp"
+        ssh "${SSH_OPTS[@]}" "$host" "
+            src='${dst}.tmp'; dst='$dst'
+            if [ -f \"\$dst\" ]; then
+                sed -e '/^# >>> deploy.sh managed/,/^# <<< deploy.sh managed/d' \"\$dst\" > \"\$dst.head\"
+            else
+                : > \"\$dst.head\"
+            fi
+            { cat \"\$dst.head\"; printf '\n# >>> deploy.sh managed\n'; cat \"\$src\"; printf '# <<< deploy.sh managed\n'; } > \"\$dst\"
+            rm -f \"\$src\" \"\$dst.head\"
+        "
     fi
 }
 
@@ -295,9 +330,10 @@ deploy_remote() {
     done
 
     # execute transfers
+    for ((i=0; i<${#dsts[@]}; i++)); do
+        push "$host" "${srcs[$i]}" "${dsts[$i]}" 0 || fail "$host: ${dsts[$i]}"
+    done
     log "  $host [$manifest] -> merged/ transfer phase"
-    # (transfer logic is inline below, see case manifest -> transfers)
-    :
 
     # batch chmod: every deployed file (pushed + appended) gets its mode set
     # in one remote call, instead of one chmod per file.
