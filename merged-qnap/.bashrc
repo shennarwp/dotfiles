@@ -12,7 +12,7 @@
 [ -z "$NEOFETCH_RAN" ] && [ -x /root/bin/neofetch ] && /root/bin/neofetch && export NEOFETCH_RAN=1
 
 # Fall back to ufetch (POSIX sh, at /root/bin/ufetch).
-[ -z "$UFETCH_RAN" ] && [ -x "$HOME/bin/ufetch" ] && "$HOME/bin/ufetch" && export UFETCH_RAN=1
+[ -z "$NEOFETCH_RAN" ] && [ -x "$HOME/bin/ufetch" ] && "$HOME/bin/ufetch" && export NEOFETCH_RAN=1
 
 # If not running interactively, don't do anything.
 [ -z "$PS1" ] && return
