@@ -4,6 +4,16 @@
 # ~/.bashrc: executed by bash(1) for non-login interactive shells.
 # QNAP NAS variant of the merged dotfiles.
 
+# System-info banner on first load of an interactive-ish shell. Placed above
+# the PS1 guard: QNAP's login bash runs non-interactive (no `i` in $-), so
+# anything below the guard would never fire over SSH.
+
+# Try neofetch first (downloaded binary at /root/bin/neofetch).
+[ -z "$NEOFETCH_RAN" ] && [ -x /root/bin/neofetch ] && /root/bin/neofetch && export NEOFETCH_RAN=1
+
+# Fall back to ufetch (POSIX sh, at /root/bin/ufetch).
+[ -z "$UFETCH_RAN" ] && [ -x "$HOME/bin/ufetch" ] && "$HOME/bin/ufetch" && export UFETCH_RAN=1
+
 # If not running interactively, don't do anything.
 [ -z "$PS1" ] && return
 
@@ -30,12 +40,6 @@ if [ -d "$HOME/bin" ]; then
     PATH="$HOME/bin:$PATH"
 fi
 
-# Display system info on login — neofetch if available, else simple banner.
-if command -v neofetch >/dev/null 2>&1; then
-    neofetch
-else
-    printf '\e[31m[\e[0m\e[1mDEPLOY\e[0m\e[31m]\e[0m \e[1m%s\e[0m\n' "$(uname -s) $(uname -m)"
-fi
 export PATH
 
 export USER=$(id -un)
@@ -171,9 +175,3 @@ for f in ~/.bash_aliases ~/.bash_aliases_local ~/.bash_functions; do
         . "$f"
     fi
 done
-
-# system-info banner (once per session)
-if [ -x "$(command -v neofetch)" ] && [ -z "$NEOFETCH_RAN" ]; then
-    neofetch
-    export NEOFETCH_RAN=1
-fi
