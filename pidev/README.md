@@ -7,8 +7,8 @@ same model catalog opencode has.
 | File | Purpose |
 |---|---|
 | [`install.sh`](install.sh) | idempotent installer: env vars, `models.json`, extension |
-| [`models.json`](models.json) | static fallback — the `oc-free` provider plus a fixed `9router` list |
-| [`extension/9router.ts`](extension/9router.ts) | provider extension that discovers models live from `/v1/models` |
+| [`models.json`](models.json) | the 19-model `9router` list — same set as `../opencode/opencode.jsonc` |
+| [`extension/9router.ts`](extension/9router.ts) | provider extension that refreshes from `/v1/models` |
 
 ## 1. Install
 
@@ -49,9 +49,10 @@ never carry the key. See [FIXME.md](../FIXME.md).
 
 ## 3. Which mode
 
-**Extension mode (default).** `9router` models are fetched from
-`$NINEROUTER_URL/v1/models` at startup and carry real per-model metadata:
-
+**Extension mode (default).** Pi refreshes models from
+`$NINEROUTER_URL/v1/models` at startup, but this repo also keeps a
+static `9router` baseline in `~/.pi/agent/models.json` so the model
+*selection* matches opencode.
 ```
 combo                    ctx=128000   out=32768  input=text+image  reasoning=false
 gemini/gemini-3.8-flash  ctx=1048576  out=65536  input=text+image  reasoning=true
@@ -67,10 +68,9 @@ fails, the extension keeps the previous list rather than dropping to zero.
 **Static mode (`--static`).** No extension; a fixed list in `models.json`.
 Simpler, no discovery, but you edit the file by hand when the gateway changes.
 
-In extension mode `install.sh` removes the static `9router` entry from
-`models.json` on purpose: pi composes `models.json` *above* a registered
-provider, so a stale static list would override the discovered one.
-
+In extension mode we do **not** remove the static `9router` entry.
+We want pi's picker to stay in lockstep with opencode's declared 19-model
+set; `/v1/models` can omit some `oc/*` ids.
 **The `oc-free` provider stays static either way.** Those `oc/*` models are
 not in `/v1/models` — they are a separate upstream catalog proxied by the same
 gateway — so they are declared in `models.json` and left alone by the
@@ -80,7 +80,7 @@ extension.
 
 ```bash
 source ~/.bashrc                      # pick up the exports
-pi --list-models | grep 9router       # extension mode: 9 models discovered
+pi --list-models | grep 9router       # expect 19 models (same as opencode)
 curl "$NINEROUTER_URL/api/health" -H "Authorization: Bearer $NINEROUTER_KEY"
 # {"ok":true}
 ```
@@ -118,8 +118,10 @@ up. Check `NINEROUTER_KEY` is exported in the process that starts pi, or run
 offline (`allowNetwork: false`), in which case the previous list is kept and
 nothing is fetched. Restart with network.
 
-**A model disappeared after adding an account.** Expected: the list *is* the
-gateway's list. Run `/reload` or restart pi to re-discover.
+**A model disappeared after adding an account.** The static baseline in
+`models.json` wins over the discovered list, so the picker stays at the 19
+models declared in this repo. Edit `models.json` (and `../opencode/opencode.jsonc`)
+together to change the set, then `/reload`.
 
 **Requests rejected by the gateway.** `openai-completions` is the API the
 gateway speaks; both `baseURL`s in the opencode config use the same

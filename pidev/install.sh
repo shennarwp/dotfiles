@@ -121,10 +121,10 @@ if [ "$WRITE_MODELS" = 1 ]; then
       // static mode: ship both providers, extension does not exist
       Object.assign(current.providers, incoming.providers);
     } else {
-      // extension mode: oc-free is not discoverable via /v1/models, so it stays
-      // static here; `9router` comes from the extension.
-      if (incoming.providers["oc-free"]) current.providers["oc-free"] = incoming.providers["oc-free"];
-      delete current.providers["9router"];
+      // extension mode: keep the static 9router list as the source of truth so
+      // pi picker matches opencode declared 19 models; /v1/models can omit
+      // some oc/* ids. The extension still refreshes from the gateway.
+      if (incoming.providers["9router"]) current.providers["9router"] = incoming.providers["9router"];
     }
     fs.writeFileSync(MODELS_FILE, JSON.stringify(current, null, 2) + "\n");
     const names = Object.keys(current.providers);
