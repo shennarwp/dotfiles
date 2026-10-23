@@ -31,5 +31,10 @@ terminator/config text eol=lf
 # batch file executed by cmd.exe (VS Code Remote SSH): CRLF
 vscode/wsl-ssh.bat text eol=crlf
 
+# O&O ShutUp10 config, consumed by a Windows app: CRLF
+# LF in the index + CRLF on checkout keeps core.safecrlf=true happy on commit
+# and keeps the worktree file byte-compatible with the app.
+oosu/ooshutup10.cfg text eol=crlf
+
 # binary export: never diff, never EOL-translate
 *.rayconfig binary
