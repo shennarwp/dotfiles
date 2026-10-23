@@ -52,7 +52,7 @@ never carry the key. See [FIXME.md](../FIXME.md).
 **Extension mode (default).** Pi refreshes models from
 `$NINEROUTER_URL/v1/models` at startup, but this repo also keeps a
 static `9router` baseline in `~/.pi/agent/models.json` so the model
-*selection* matches opencode.
+*selection* matches opencode. All listed models are marked `reasoning: true`.
 ```
 combo                    ctx=128000   out=32768  input=text+image  reasoning=false
 gemini/gemini-3.8-flash  ctx=1048576  out=65536  input=text+image  reasoning=true
