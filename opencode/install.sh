@@ -75,14 +75,21 @@ fi
 
 # ── 3. config ─────────────────────────────────────────────────────────
 CFG_DIR="$HOME/.config/opencode"
-CFG="$CFG_DIR/opencode.jsonc"
 mkdir -p "$CFG_DIR"
 
-if [ -f "$CFG" ] && [ "$FORCE" -eq 0 ]; then
-  say "keeping existing $CFG (pass --force-config to overwrite)"
+if [ -f "$CFG_DIR/opencode.jsonc" ] && [ "$FORCE" -eq 0 ]; then
+  say "keeping existing $CFG_DIR/opencode.jsonc (pass --force-config to overwrite)"
 else
-  cp "$HERE/opencode.jsonc" "$CFG"
-  say "installed $CFG"
+  cp "$HERE/opencode.jsonc" "$CFG_DIR/opencode.jsonc"
+  say "installed opencode.jsonc"
+fi
+
+if [ -f "$CFG_DIR/cli.json" ]; then
+  say "keeping existing $CFG_DIR/cli.json"
+else
+  mkdir -p "$CFG_DIR"
+  cp "$HERE/cli.json" "$CFG_DIR/cli.json"
+  say "installed cli.json"
 fi
 
 # ── 4. gateway reachable? ─────────────────────────────────────────────
@@ -115,8 +122,5 @@ cat <<EOF
 
 Done. Next:
   1. reload your shell:   source "$RC"
-  2. verify models:       opencode models | grep -E '^(9router|oc-free)'
-  3. start:               opencode
-
-If /models does not list the oc/* models, see README.md ("Known quirks").
+  2. start:               opencode
 EOF
