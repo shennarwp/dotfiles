@@ -5,14 +5,11 @@
 # it goes into ~/.bash_aliases_local (chmod 600), which deploy.sh does not
 # overwrite on the debian hosts.
 #
-# Two install modes:
-#   default    provider extension (live model discovery from /v1/models)
-#   --static   plain models.json, no extension, fixed model list
+# Static-only: models.json is the single source of truth for the model list.
 #
-# Usage:  ./install.sh [--static] [--no-models] [--force-models]
+# Usage:  ./install.sh [--no-models] [--force-models]
 #
-#   --static        use models.json only; do not install the extension
-#   --no-models     do not touch models.json (extension still installed)
+#   --no-models     do not touch models.json
 #   --force-models  replace models.json instead of merging into it
 #
 # Environment:
@@ -23,7 +20,6 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 MODELS_FILE="$AGENT_DIR/models.json"
-EXT_FILE="$AGENT_DIR/extensions/9router.ts"
 LOCAL_OVERRIDES="${LOCAL_OVERRIDES:-$HOME/.bash_aliases_local}"
 RC="${RC:-$HOME/.bashrc}"
 
@@ -38,12 +34,10 @@ fi
 say() { printf '  %s\n' "$*"; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
 
-STATIC=0
 WRITE_MODELS=1
 FORCE_MODELS=0
 while [ $# -gt 0 ]; do
   case "$1" in
-    --static) STATIC=1; shift ;;
     --no-models) WRITE_MODELS=0; shift ;;
     --force-models) FORCE_MODELS=1; shift ;;
     -h|--help) awk 'NR>1 && !/^#/ {exit} NR>1 {sub(/^# ?/, ""); print}' "$0"; exit 0 ;;
@@ -57,10 +51,6 @@ command -v pi >/dev/null 2>&1 || die "pi not found — install it first (see htt
 # ── 2. environment ───────────────────────────────────────────────────────
 # NINEROUTER_URL and NINEROUTER_KEY are BOTH per-host and BOTH live in
 # ~/.bash_aliases_local (see ../opencode/README.md section 2 — same gateway).
-#
-# NOTE: on qnap and alpine, deploy.sh \`push_append\` merges the tracked copy
-# into ~/.bash_aliases_local, preserving any host-specific content. The header
-# and deploy_mode comment below now reflect this append-vs-overwrite behaviour.
 
 if [ -z "$NINEROUTER_URL" ]; then
   say "NINEROUTER_URL not set — add it to $LOCAL_OVERRIDES:"
@@ -82,28 +72,24 @@ elif [ -t 0 ]; then
     chmod 600 "$LOCAL_OVERRIDES"
     say "added NINEROUTER_KEY to $LOCAL_OVERRIDES"
   else
-    say "skipped key — set NINEROUTER_KEY in $LOCAL_OVERRIDES, or run /login 9router in pi"
+    say "skipped key — set NINEROUTER_KEY in $LOCAL_OVERRIDES before starting pi"
   fi
 else
-  say "non-interactive: set NINEROUTER_KEY in $LOCAL_OVERRIDES yourself (or use /login in pi)"
+  say "non-interactive: set NINEROUTER_KEY in $LOCAL_OVERRIDES yourself"
 fi
 
 # ── 3. models.json ───────────────────────────────────────────────────────
 # Merge rather than overwrite: the agent's models.json usually holds other
-# providers. With the extension installed, the static `9router` entry is
-# dropped — the extension owns that provider id, and pi composes models.json
-# overrides ABOVE a registered provider, so a stale static list would win.
+# providers. --force-models replaces it outright (keeps a .bak).
 
 if [ "$WRITE_MODELS" = 1 ]; then
   mkdir -p "$AGENT_DIR"
   SRC_MODELS="$HERE/models.json"
   [ "$FORCE_MODELS" = 1 ] && [ -f "$MODELS_FILE" ] && cp -p "$MODELS_FILE" "$MODELS_FILE.bak"
 
-  AGENT_DIR="$AGENT_DIR" SRC_MODELS="$SRC_MODELS" MODELS_FILE="$MODELS_FILE" STATIC="$STATIC" \
-  FORCE="$FORCE_MODELS" node -e '
+  SRC_MODELS="$SRC_MODELS" MODELS_FILE="$MODELS_FILE" FORCE="$FORCE_MODELS" node -e '
     const fs = require("fs");
-    const { SRC_MODELS, MODELS_FILE, STATIC, FORCE } = process.env;
-    const isStatic = STATIC === "1";
+    const { SRC_MODELS, MODELS_FILE, FORCE } = process.env;
     const force = FORCE === "1";           // string "0" is truthy: compare, do not coerce
     const incoming = JSON.parse(fs.readFileSync(SRC_MODELS, "utf8"));
     let current = { providers: {} };
@@ -117,15 +103,7 @@ if [ "$WRITE_MODELS" = 1 ]; then
       }
     }
     current.providers = current.providers || {};
-    if (isStatic) {
-      // static mode: ship both providers, extension does not exist
-      Object.assign(current.providers, incoming.providers);
-    } else {
-      // extension mode: keep the static 9router list as the source of truth so
-      // pi picker matches opencode declared 19 models; /v1/models can omit
-      // some oc/* ids. The extension still refreshes from the gateway.
-      if (incoming.providers["9router"]) current.providers["9router"] = incoming.providers["9router"];
-    }
+    Object.assign(current.providers, incoming.providers);
     fs.writeFileSync(MODELS_FILE, JSON.stringify(current, null, 2) + "\n");
     const names = Object.keys(current.providers);
     console.log(`  models.json -> ${MODELS_FILE}`);
@@ -135,16 +113,7 @@ else
   say "skipping models.json (--no-models)"
 fi
 
-# ── 4. provider extension ────────────────────────────────────────────────
-if [ "$STATIC" = 1 ]; then
-  say "static mode: not installing the extension"
-else
-  mkdir -p "$AGENT_DIR/extensions"
-  cp "$HERE/extension/9router.ts" "$EXT_FILE"
-  say "extension -> $EXT_FILE"
-fi
-
-# ── 5. gateway reachable? ────────────────────────────────────────────────
+# ── 4. gateway reachable? ────────────────────────────────────────────────
 if [ -z "$NINEROUTER_URL" ]; then
   say "NINEROUTER_URL unknown — skipped gateway check"
 elif ! command -v curl >/dev/null 2>&1; then
@@ -153,24 +122,13 @@ else
   KEY="$(grep -m1 '^[[:space:]]*export NINEROUTER_KEY=' "$LOCAL_OVERRIDES" 2>/dev/null |
     sed 's/^[^=]*=[[:space:]]*//; s/^["'"'"']//; s/["'"'"']$//')" || true
   if [ -n "$KEY" ]; then
-    BODY="$(curl -sf -m 15 "$NINEROUTER_URL/v1/models" -H "Authorization: Bearer $KEY" 2>/dev/null)" || BODY=""
-    if [ -z "$BODY" ]; then
-      say "WARNING: $NINEROUTER_URL/v1/models did not answer — check the URL/VPN"
-    else
+    if curl -sf -m 10 "$NINEROUTER_URL/api/health" -H "Authorization: Bearer $KEY" >/dev/null 2>&1; then
       say "gateway healthy: $NINEROUTER_URL"
-      printf '%s' "$BODY" | node -e '
-        let raw = "";
-        process.stdin.on("data", (c) => (raw += c));
-        process.stdin.on("end", () => {
-          const data = JSON.parse(raw).data || [];
-          console.log(`  ${data.length} model(s) offered:`);
-          for (const m of data) console.log(`    ${m.id}`);
-          console.log("  note: oc-free/* models are not listed here; they stay in models.json");
-        });
-      '
+    else
+      say "WARNING: $NINEROUTER_URL/api/health did not answer — check the URL/VPN"
     fi
   else
-    say "no NINEROUTER_KEY yet — skipped gateway check (pi can also /login 9router)"
+    say "no NINEROUTER_KEY yet — skipped gateway check"
   fi
 fi
 
