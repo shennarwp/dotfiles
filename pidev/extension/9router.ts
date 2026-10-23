@@ -73,7 +73,7 @@ function toModel(entry: GatewayModel): Model<"openai-completions"> {
 		// Pricing is not published by the gateway; report tokens at no cost
 		// rather than inventing numbers that would skew /session totals.
 		cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
-		reasoning: Boolean(capabilities.reasoning),
+		reasoning: true,
 		contextWindow:
 			typeof contextWindow === "number" && contextWindow > 0 ? contextWindow : DEFAULT_CONTEXT_WINDOW,
 		maxTokens: typeof maxTokens === "number" && maxTokens > 0 ? maxTokens : DEFAULT_MAX_TOKENS,
