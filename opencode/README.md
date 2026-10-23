@@ -6,8 +6,7 @@ Setup for [opencode](https://opencode.ai) on WSL/Linux, routed through the
 Target state after following this doc:
 
 - `opencode` on PATH, talking to 9router at `$NINEROUTER_URL`
-- 29 chat models discovered from the gateway (gemini / cloudflare / nvidia)
-- 4 `oc/*` "OpenCode Free" models visible in the picker
+- All 19 9router models visible in the picker
 - 8 `9router-*` capability skills installed locally
 
 ## Quick start
@@ -15,12 +14,12 @@ Target state after following this doc:
 ```bash
 ./install.sh
 source ~/.bashrc
-opencode models | grep -E '^(9router|oc-free)'
 opencode
 ```
 
-`install.sh` is idempotent — re-run it any time. It never writes the API key
-into this repo; the key goes into `~/.bashrc` and opencode's auth store only.
+`install.sh` is idempotent — re-run it any time. It never writes secrets into
+this repo; `NINEROUTER_KEY` and `KAN_TOKEN` live in `~/.bash_aliases_local`
+(`chmod 600`) and are read via `{env:...}` in the config.
 
 ## Prerequisites
 
@@ -48,8 +47,9 @@ Both variables are **per-host** and both live in `~/.bash_aliases_local`
 `~/.bash_aliases`:
 
 ```bash
-export NINEROUTER_URL="http://<gateway-host>"             # per-host endpoint
-export NINEROUTER_KEY="sk-..."                        # Dashboard → Keys
+export NINEROUTER_URL="http://<gateway-host>"   # per-host endpoint
+export NINEROUTER_KEY="sk-..."                  # Dashboard → Keys
+export KAN_TOKEN="kan_..."                      # kan MCP bearer token
 ```
 
 Neither is in the tracked `merged/.bashrc`: a host that cannot reach the
@@ -97,32 +97,36 @@ Copy [`opencode.jsonc`](opencode.jsonc) to `~/.config/opencode/opencode.jsonc`:
 cp opencode.jsonc ~/.config/opencode/opencode.jsonc
 ```
 
-It defines two providers, both pointing at the same gateway:
+It defines one provider (`9router`) pointing at the gateway:
 
 | Provider key | Label in UI | Models | Source |
 |---|---|---|---|
-| `9router` | 9Router | auto-discovered | `GET /v1/models` |
-| `oc-free` | OpenCode Free | 4, declared by hand | see "Known quirks" |
+| `9router` | 9Router | 19, declared by hand | full model list in config |
 
 Two config details worth keeping:
 
 - `"apiKey": "{env:NINEROUTER_KEY}"` — the key is read from the environment,
   never stored in the config file.
-- `"cacheTTL": 300000` on `9router` — 5 minutes. The discovery plugin otherwise
-  caches the model list for 3 hours, so newly connected accounts stay invisible.
-  Lower it if you add accounts often.
+- `"cacheTTL": 300000` — 5 minutes. If the gateway model list changes, wait out
+  the cache or restart opencode.
 
 ## 4. Models
 
-```bash
-opencode models | grep -E '^(9router|oc-free)' | head
-```
+All 19 9router models are declared in [`opencode.jsonc`](opencode.jsonc):
+- combo (built‑in)
+- ag/gemini-3.8-flash* (4 variants)
+- gh/gpt-4o, gh/gpt-4.1, gh/gpt-5.4-nano
+- nvidia/nvidia/nemotron-3-ultra-550b-a55b
+- cf/@cf/qwen/qwen3.8-27b
+- cf/@cf/zai-org/glm-4.7-flash
+- deepseek-web/deepseek-v4-pro, deepseek-web/deepseek-v4-flash
+- oc/space-bunny-free, oc/big-pickle
+- oc/nemotron-3.5-lightning-free (reasoning: true)
+- oc/muse-spark-1.3-contributor-free
+- oc/deepseek-v4.1-flash-free
+- oc/glm-5.3-flash-free
 
-Expect `9router/*` for every model the gateway currently serves (the count
-tracks whatever accounts are configured in the dashboard) and 4 `oc-free/oc/*`.
-
-After changing accounts in the dashboard, discovery is cached. Wait out
-`cacheTTL` (5 min) or restart opencode; there is no CLI flush.
+Verify with `opencode models | grep '^9router/' | wc -l` (expect 19).
 
 ## 5. Capability skills
 
@@ -146,7 +150,7 @@ Available on this gateway right now:
 
 | Capability | Endpoint | Models |
 |---|---|---|
-| chat | `/v1/models` | 29 |
+| chat | `/v1/models` | 19 |
 | image | `/v1/models/image` | 14 |
 | tts | `/v1/models/tts` | 5 |
 | embeddings | `/v1/models/embedding` | 6 |
@@ -159,59 +163,25 @@ will drift. Re-check with the discovery endpoints above.
 
 ## Known quirks
 
-Two non-obvious failure modes, both already worked around in the config above.
-Understand them before "fixing" anything that looks broken.
-
-### 9router never lists the `oc/*` models
-
-`curl $NINEROUTER_URL/v1/models | grep -c '"oc/'` returns `0`, even though
-`POST /v1/chat/completions` with `oc/space-bunny-free` returns `200`. This is a
-server-side gap in 9router, not a misconfiguration — nothing in the dashboard
-changes it. Upstream calls it out in the `@haoyiyin/9router` README.
-
-Workaround: declare the four models under a **separate provider key** that does
-not start with `9router` (ours is `oc-free`). The discovery plugin only
-rewrites providers whose key starts with `9router`:
-
-```js
-const providerKeys = Object.keys(provider).filter((k) => k.startsWith("9router"));
-// ...
-entry.models = discovered ?? {};   // unconditional overwrite
-```
-
-So anything declared under `9router` is discarded at startup. `oc-free` is
-invisible to the plugin, so those declarations survive.
-
-### The TUI `/models` filters on credentials
-
-A provider can be present in config and visible to `opencode models`, yet be
-hidden from the in-app `/models` picker. The picker needs an entry in
-opencode's auth store:
+The TUI `/models` picker filters on credentials. A provider can be present in
+config and visible to `opencode models`, yet hidden from the picker unless it
+has an entry in opencode's auth store:
 
 ```
 ~/.local/share/opencode/auth.json
 ```
 
-Add the provider with the same key (both providers here share one gateway and
-one key):
+Add both providers there:
 
 ```json
-"oc-free": { "type": "api", "key": "<same value as NINEROUTER_KEY>" }
+{
+  "9router": { "type": "api", "key": "<same value as NINEROUTER_KEY>" },
+  "kan":     { "type": "api", "key": "<same value as KAN_TOKEN>" }
+}
 ```
 
 Quit opencode before editing that file — it can overwrite it on exit. Re-verify
 with `opencode providers list`.
-
-The built-in `opencode` provider (OpenCode Zen) also has no credential, so its
-own models stay hidden in the picker. That is expected; they are a separate
-path that bypasses the gateway.
-
-### Screenshot mismatch
-
-"OpenCode Free" appears in the picker under that label, not as `oc-free` or
-`9router` — the `name` field sets the display label. Typing `oc` into the
-filter box matches nothing, because the model labels are `Big Pickle`,
-`Space Bunny Free`, etc. Clear the filter and scroll for the group label.
 
 ## Security
 
@@ -225,8 +195,11 @@ filter box matches nothing, because the model labels are `Big Pickle`,
 - **Never** put the key in `~/.bashrc`: `deploy.sh` overwrites that file
   wholesale with `merged/.bashrc`, so the key would be lost on the next deploy
   (and `deploy.sh` does not back up first — see FIXME.md).
-- If the gateway key ever leaks, rotate it in the 9router dashboard and update
-  both places above.
+- The `kan` MCP bearer token is `KAN_TOKEN` in `~/.bash_aliases_local`, read as
+  `{env:KAN_TOKEN}` in `opencode.jsonc`. Never commit the literal token — the
+  repo is public and `tools/validate.sh` runs gitleaks.
+- If the gateway key or the kan token leaks, rotate it and update both places
+  above.
 
 ## Files
 
@@ -234,4 +207,5 @@ filter box matches nothing, because the model labels are `Big Pickle`,
 |---|---|
 | `README.md` | this doc |
 | `opencode.jsonc` | config to copy into `~/.config/opencode/` |
+| `cli.json` | CLI theme and session UX settings |
 | `install.sh` | idempotent installer for a fresh machine |
