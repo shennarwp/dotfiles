@@ -110,6 +110,14 @@
           "maxTokens": 65536
         },
         {
+          "id": "mistral/codestral-latest",
+          "name": "Mistral Codestral",
+          "input": ["text"],
+          "reasoning": true,
+          "contextWindow": 128000,
+          "maxTokens": 65536
+        },
+        {
           "id": "oc/space-bunny-free",
           "name": "Space Bunny Free",
           "reasoning": true
