@@ -1,9 +1,10 @@
 ---
 id: TASK-18
 title: 'tools/validate.sh: add a smoke test for pidev/extension/9router.ts'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-01 19:38'
+updated_date: '2026-10-30 20:37'
 labels:
   - validate
   - ci
@@ -31,3 +32,9 @@ ordinal: 18000
 - [ ] #1 tools/validate.sh passes
 - [ ] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Closed as obsolete: pidev/extension/9router.ts has been removed. The proposed jiti import smoke test and its acceptance criteria no longer apply. No change to tools/validate.sh is needed; the existing JSON validation covers pidev/models.json. Original criteria are retained unchecked because the test was not implemented.
+<!-- SECTION:FINAL_SUMMARY:END -->
