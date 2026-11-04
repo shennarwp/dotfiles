@@ -6,7 +6,7 @@ Setup for [opencode](https://opencode.ai) on WSL/Linux, routed through the
 Target state after following this doc:
 
 - `opencode` on PATH, talking to 9router at `$NINEROUTER_URL`
-- All 19 9router models visible in the picker
+- All 24 9router models visible in the picker
 - 8 `9router-*` capability skills installed locally
 
 ## Quick start
@@ -101,7 +101,7 @@ It defines one provider (`9router`) pointing at the gateway:
 
 | Provider key | Label in UI | Models | Source |
 |---|---|---|---|
-| `9router` | 9Router | 19, declared by hand | full model list in config |
+| `9router` | 9Router | 24, declared by hand | full model list in config |
 
 Two config details worth keeping:
 
@@ -112,7 +112,7 @@ Two config details worth keeping:
 
 ## 4. Models
 
-All 19 9router models are declared in [`opencode.jsonc`](opencode.jsonc):
+All 24 9router models are declared in [`opencode.jsonc`](opencode.jsonc):
 - combo (built‑in)
 - ag/gemini-3.8-flash* (4 variants)
 - gh/gpt-4o, gh/gpt-4.1, gh/gpt-5.4-nano
@@ -125,8 +125,10 @@ All 19 9router models are declared in [`opencode.jsonc`](opencode.jsonc):
 - oc/muse-spark-1.3-contributor-free
 - oc/deepseek-v4.1-flash-free
 - oc/glm-5.3-flash-free
+- kr/qwen3-coder-next
+- kr/glm-5
 
-Verify with `opencode models | grep '^9router/' | wc -l` (expect 19).
+Verify with `opencode models | grep '^9router/' | wc -l` (expect 24).
 
 ## 5. Capability skills
 
@@ -150,7 +152,7 @@ Available on this gateway right now:
 
 | Capability | Endpoint | Models |
 |---|---|---|
-| chat | `/v1/models` | 19 |
+| chat | `/v1/models` | 24 |
 | image | `/v1/models/image` | 14 |
 | tts | `/v1/models/tts` | 5 |
 | embeddings | `/v1/models/embedding` | 6 |
