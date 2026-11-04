@@ -7,7 +7,7 @@ same model catalog opencode has.
 | File | Purpose |
 |---|---|
 | [`install.sh`](install.sh) | idempotent installer: env vars, `models.json` |
-| [`models.json`](models.json) | the 19-model `9router` list — same set as `../opencode/opencode.jsonc` |
+| [`models.json`](models.json) | the 24-model `9router` list — same set as `../opencode/opencode.jsonc` |
 
 ## 1. Install
 
@@ -45,19 +45,19 @@ never carry the key. See [FIXME.md](../FIXME.md).
 
 ## 3. Models
 
-Static-only. `models.json` declares the same 19 models as
+Static-only. `models.json` declares the same 24 models as
 [`../opencode/opencode.jsonc`](../opencode/opencode.jsonc), all with
 `reasoning: true`. Edit both files together to change the set.
 
 No extension, no discovery: the picker is exactly what `models.json` says. The
-gateway may serve more models than the 19 declared here; add them by hand if
+gateway may serve more models than the 24 declared here; add them by hand if
 you want them visible in pi.
 
 ## 4. Verify
 
 ```bash
 source ~/.bashrc                      # pick up the exports
-pi --list-models | grep 9router       # expect 19 models (same as opencode)
+pi --list-models | grep 9router       # expect 24 models (same as opencode)
 curl "$NINEROUTER_URL/api/health" -H "Authorization: Bearer $NINEROUTER_KEY"
 # {"ok":true}
 ```
@@ -85,7 +85,7 @@ up. Check `NINEROUTER_KEY` is exported in the process that starts pi.
 from "no key".
 
 **A model disappeared after adding an account.** Nothing is auto-discovered.
-The picker stays at the 19 models declared in this repo. Edit `models.json`
+The picker stays at the 24 models declared in this repo. Edit `models.json`
 (and `../opencode/opencode.jsonc`) together to change the set, then `/reload`.
 
 **Requests rejected by the gateway.** `openai-completions` is the API the

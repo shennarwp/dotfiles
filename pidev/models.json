@@ -162,6 +162,22 @@
           "reasoning": true,
           "contextWindow": 1000000,
           "maxTokens": 65536
+        },
+        {
+          "id": "kr/qwen3-coder-next",
+          "name": "Qwen3 Coder Next",
+          "input": ["text"],
+          "reasoning": true,
+          "contextWindow": 128000,
+          "maxTokens": 65536
+        },
+        {
+          "id": "kr/glm-5",
+          "name": "GLM-5",
+          "input": ["text"],
+          "reasoning": true,
+          "contextWindow": 128000,
+          "maxTokens": 65536
         }
       ]
     }
