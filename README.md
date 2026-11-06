@@ -66,7 +66,7 @@ deploy.sh               one-shot deploy to all hosts (probes OS, per-OS manifest
 | qnap | `qnap` | QTS 4.3.3 (TS-219) | armv5tel | no tput/git/jobs, neofetch |
 | alpine | `gpd` | Alpine 3.24 | x86_64 | requires `apk add bash bash-completion ncurses fastfetch` |
 | openwrt | `omg` | OpenWrt 18.06 | MIPS | ash/busybox, pfetch, no fastfetch |
-| zro | `zro` | (undocumented) | — | — |
+| zro | `zro` | Raspbian 13 (trixie) | armv6l (Pi Zero) | fastfetch 2.40.4-debug, standard merged/ deployment |
 
 ## Deployment
 

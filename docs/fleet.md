@@ -15,6 +15,7 @@ Volatile. If this disagrees with reality, fix this file, not `AGENTS.md`.
 | qnap | `qnap` | `/root` | `merged-qnap/` + `merged/.bash_aliases` | neofetch 7.1.0 at `/root/bin/neofetch` | bash 3.2.57, no scp |
 | alpine | `gpd` | `~` | `merged/` + `merged-alpine/.bash_aliases_local` | fastfetch (`apk add fastfetch`) | Alpine 3.24, no `tput` |
 | openwrt | `omg` | `/root` | `merged-openwrt/` | pfetch at `~/.pfetch` | ash/busybox, wget only |
+| zro | `zro` | `~` | `merged/` | fastfetch 2.40.4-debug at `/usr/bin/fastfetch` | Raspbian 13 (trixie), armv6l (Pi Zero) |
 
 Non-obvious SSH aliases: `gpd` (alpine), `omg` (openwrt), `qnap`.
 
