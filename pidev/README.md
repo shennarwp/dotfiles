@@ -68,7 +68,7 @@ session, `/reload`.
 Set a default with `Ctrl+S` in `/model`, or in `~/.pi/agent/settings.json`:
 
 ```json
-{ "defaultProvider": "9router", "defaultModel": "ag/gemini-3.8-flash" }
+{ "defaultProvider": "9router", "defaultModel": "combo" }
 ```
 
 ## 5. Uninstall

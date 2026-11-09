@@ -1,4 +1,5 @@
 {
+  "model": "9router/combo",
   "provider": {
     "9router": {
       "npm": "@ai-sdk/openai-compatible",
