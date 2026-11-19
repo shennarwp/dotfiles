@@ -1,9 +1,10 @@
 ---
 id: TASK-31
 title: Make the VS Code settings portable
-status: To Do
+status: Done
 assignee: []
-created_date: '2026-10-01 19:38'
+created_date: 2026-10-01 19:38
+updated_date: '2026-11-19T13:55:00Z'
 labels:
   - vscode
   - docs
@@ -29,6 +30,19 @@ vscode/settings.json mixes shared editor settings with machine-specific WSL SSH 
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 tools/validate.sh passes
-- [ ] #2 PR opened against master, left unmerged
+- [x] #1 tools/validate.sh passes
+- [x] #2 PR opened against master, left unmerged
 <!-- DOD:END -->
+
+## Comments
+
+<!-- COMMENTS:BEGIN -->
+author: shennarwp
+created: 2026-11-19T13:55:00Z
+
+---
+
+Won't fix: not necessary. The current single vscode/settings.json works fine; splitting out a local layer adds maintenance for no practical benefit here.
+
+---
+<!-- COMMENTS:END -->
