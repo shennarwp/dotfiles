@@ -240,7 +240,8 @@ if [ "$color_prompt" = yes ]; then
     # bash 5.1+ supports PROMPT_COMMAND as an array
     if [ "${BASH_VERSINFO[0]:-0}" -gt 5 ] || { [ "${BASH_VERSINFO[0]:-0}" -eq 5 ] && [ "${BASH_VERSINFO[1]:-0}" -ge 1 ]; }; then
         if declare -p PROMPT_COMMAND 2>/dev/null | grep -q 'declare -a'; then
-            local _pc_found=0
+            # file scope: `local` would fail here and leave _pc_found empty
+            _pc_found=0
             for _pc in "${PROMPT_COMMAND[@]}"; do
                 [ "$_pc" = "__makePS1" ] && _pc_found=1 && break
             done
