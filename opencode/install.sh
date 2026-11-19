@@ -32,6 +32,7 @@ if command -v opencode >/dev/null 2>&1; then
   say "opencode already installed: $(command -v opencode) ($(opencode --version 2>/dev/null))"
 elif command -v npm >/dev/null 2>&1; then
   say "installing opencode via npm..."
+  # Deliberately unpinned: installs should always pick up the latest opencode-ai.
   npm install -g opencode-ai
 else
   die "need opencode installed — see https://opencode.ai/docs/ (or install npm first)"
@@ -106,6 +107,8 @@ else
 fi
 
 # ── 5. 9router skills (optional, only if the repo is reachable) ───────
+# SKILL.md files are fetched from upstream master over HTTPS with no checksum;
+# these downloads are unverified by design (TASK-25 closed as won't-fix).
 SKILL_BASE=https://raw.githubusercontent.com/decolua/9router/refs/heads/master/skills
 SKILLS="9router 9router-chat 9router-image 9router-tts 9router-stt 9router-embeddings 9router-web-search 9router-web-fetch"
 mkdir -p "$CFG_DIR/skill"
